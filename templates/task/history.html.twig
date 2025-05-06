@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des Tâches{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('task_index') }}">Historique des Tâches</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Accueil</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('task_admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5">
+        <h2 class="text-center mb-4">Historique des Tâches Terminées</h2>
+
+        <!-- Barre de recherche -->
+        <form method="get" action="{{ path('task_history') }}" class="row g-3 mt-4 mb-4 search-filters">
+            <div class="col-md-3">
+                <input type="text" name="searchTitle" value="{{ app.request.query.get('searchTitle') }}" class="form-control" placeholder="Rechercher par tâche">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="searchDate" value="{{ app.request.query.get('searchDate') }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <select name="searchPriority" class="form-select">
+                    <option value="">Sélectionner priorité</option>
+                    <option value="faible" {% if app.request.query.get('searchPriority') == 'faible' %}selected{% endif %}>Faible</option>
+                    <option value="moyenne" {% if app.request.query.get('searchPriority') == 'moyenne' %}selected{% endif %}>Moyenne</option>
+                    <option value="élevée" {% if app.request.query.get('searchPriority') == 'élevée' %}selected{% endif %}>Élevée</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary btn-lg w-50">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="{{ path('task_history') }}" class="btn btn-outline-secondary btn-lg w-50">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </div>
+        </form>
+
+        <div class="row g-4">
+            {% for task in tasks %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-success shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-3">
+                                <h5 class="card-title mb-2">{{ task.title }}</h5>
+                                <p class="card-text mb-1">
+                                    <strong>Statut :</strong> <span class="text-success">Terminée</span><br>
+                                    <strong>Niveau :</strong>
+                                    <span class="{% if task.priority == 'élevée' %}text-danger{% elseif task.priority == 'moyenne' %}text-warning{% else %}text-info{% endif %}">
+                                    {{ task.priority|capitalize }}
+                                </span><br>
+                                    <small class="text-muted">Date : {{ task.dueDate ? task.dueDate|date('d/m/Y') : '—' }}</small>
+                                </p>
+                            </div>
+
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <form method="post" action="{{ path('task_history_delete', {'id': task.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-task-' ~ task.id) }}">
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% if task.description %}
+                                    <button class="btn btn-secondary btn-sm"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#desc-{{ task.id }}"
+                                            aria-expanded="false"
+                                            aria-controls="desc-{{ task.id }}">
+                                        <i class="bi bi-card-text"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+
+                            {% if task.description %}
+                                <div class="collapse mt-3" id="desc-{{ task.id }}">
+                                    <div class="card card-body border-top">
+                                        {{ task.description }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center text-muted">Aucune tâche terminée pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

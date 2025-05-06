@@ -1,0 +1,10 @@
+{% extends'layouts/car.html.twig' %}
+
+{% block content %}
+    <ul>
+        {% for category in categoryList %}
+            <li> {{ category.name }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}

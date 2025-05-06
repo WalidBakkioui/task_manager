@@ -1,0 +1,201 @@
+{% extends 'layouts/car.html.twig' %}
+
+{% block headerContent %}
+    <header class="header" data-header>
+        <div class="container">
+
+            <div class="overlay" data-overlay></div>
+
+            <a href="{{ url('app_home') }}" class="logo">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Ridex logo">
+            </a>
+
+            <div class="header-actions">
+
+
+                <a href="{{ url('app_home') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Accueil</span>
+                </a>
+                {% if app.user and is_granted('ROLE_ADMIN')%}
+                    <ul class="admin-nav-ul">
+                        <li class="admin-nav-li">
+                            <a href="#" class="btn admin-nav-a" aria-labelledby="aria-label-txt ">Admin</a>
+                            <ul class="admin-nav-ul">
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('ajout_create') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajoutez Voiture</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('createPhoto') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajout photo</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('list_users') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Utilisateur</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('article_list') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Article</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                {% endif %}
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                    {# Affiche le lien vers la page de profil sauf si l'utilisateur a ROLE_NOT et ROLE_USER #}
+                    <a href="{{ url('profil') }}" class="btn user-btn" aria-label="Profile">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </a>
+                {% endif %}
+                <a href="{{ url('app_contact') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Contact</span>
+                </a>
+
+
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_NOT') %}
+                    <a href="{{ url('app_logout', {_target_path: path('app_login')}) }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Déconnexion</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Connexion</span>
+                    </a>
+                {% endif %}
+
+                <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+                    <span class="one"></span>
+                    <span class="two"></span>
+                    <span class="three"></span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <article>
+            <section class="section hero" id="home">
+
+                <div class="container">
+
+                    <div class="hero-content">
+                        <h2 class="h1 hero-title">Trouvez un article</h2>
+                    </div>
+
+                    <div class="hero-banner"></div>
+
+                    <div class="filter-form">
+                        <form action="{{ path('article_list') }}" method="get" class="hero-form">
+                            <div class="input-wrapper">
+                                <label for="input-category" class="input-label">Marque</label>
+                                <select name="category" id="input-category" class="input-field">
+                                    <option value="">Toutes les marques</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if app.request.query.get('category') == category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-title" class="input-label">Modéle</label>
+                                <input type="text" name="title" id="input-title" class="input-field" value="{{ app.request.query.get('title') }}">
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-max-people" class="input-label">Nombre de personnes</label>
+                                <select name="max_people" id="input-max-people" class="input-field">
+                                    <option value="">Tous</option>
+                                    <option value="2" {% if app.request.query.get('max_people') == '2' %}selected{% endif %}>2</option>
+                                    <option value="4" {% if app.request.query.get('max_people') == '4' %}selected{% endif %}>4</option>
+                                    <option value="5" {% if app.request.query.get('max_people') == '5' %}selected{% endif %}>5</option>
+                                </select>
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-type" class="input-label">Type</label>
+                                <input type="text" name="type" id="input-type" class="input-field" value="{{ app.request.query.get('type') }}">
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-consumption" class="input-label">Consommation</label>
+                                <input type="text" name="consumption" id="input-consumption" class="input-field" value="{{ app.request.query.get('consumption') }}">
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-box" class="input-label">Boîte</label>
+                                <select name="box" id="input-box" class="input-field">
+                                    <option value="">Toutes les boîtes</option>
+                                    <option value="auto" {% if app.request.query.get('box') == 'auto' %}selected{% endif %}>Auto</option>
+                                    <option value="manuel" {% if app.request.query.get('box') == 'manuel' %}selected{% endif %}>Manuel</option>
+                                </select>
+                            </div>
+
+                            <div class="input-wrapper">
+                                <label for="input-years" class="input-label">Année</label>
+                                <input type="text" name="years" id="input-years" class="input-field" value="{{ app.request.query.get('years') }}">
+                            </div>
+
+                            <button type="submit" class="btn">Rechercher</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section  id="home">
+                <div class="container">
+                    <div class="hero-content space-title-profil">
+                        <h1>Liste des articles</h1>
+                    </div>
+                    <table class="table-custom">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Marque</th>
+                            <th>Modèle</th>
+                            <th>Max People</th>
+                            <th>Type</th>
+                            <th>Consumption</th>
+                            <th>Box</th>
+                            <th>Année</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for post in posts %}
+                            <tr>
+                                <td>{{ post.id }}</td>
+                                <td>{{ post.category.name }}</td>
+                                <td>{{ post.title }}</td>
+                                <td>{{ post.maxPeople }}</td>
+                                <td>{{ post.type }}</td>
+                                <td>{{ post.consumption }}</td>
+                                <td>{{ post.box }}</td>
+                                <td>{{ post.years }}</td>
+                                <td>{{ post.photo.path }}</td>
+                                <td>
+                                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                                        {% if app.user == post.user %}
+                                            <a href="{{ url('ajout_edit_crud', {id: post.id}) }}" class="btn">Edit</a>
+                                            <a href="{{ path('delete_blog_post_crud', {'id': post.id}) }}" onclick="return confirm('Are you sure you want to delete this article?')" class="btn">Delete</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </section>
+        </article>
+    </main>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4">Connexion</h2>
+
+            {% if error %}
+                {% if error.messageKey == 'Invalid credentials.' %}
+                    <div class="alert alert-danger">Identifiants invalides.</div>
+                {% elseif error.messageKey == 'User is banned.' %}
+                    <div class="alert alert-danger">Votre compte a été banni. Veuillez contacter l'administrateur.</div>
+                {% else %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+            {% endif %}
+
+
+
+            <form method="post" action="{{ path('login') }}">
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Adresse email</label>
+                    <input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}" required autofocus placeholder="nom@exemple.com">
+                </div>
+
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" required placeholder="Mot de passe">
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe" name="_remember_me">
+                    <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="btn btn-success w-100">Se connecter</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ path('forgot_password') }}">Mot de passe oublié ?</a><br>
+                <a href="{{ path('app_register') }}">Créer un compte</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

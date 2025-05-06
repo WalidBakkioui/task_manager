@@ -1,0 +1,8 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+#    C'est pour insérer du css dans les formulaires
+#    form_themes: ['bootstrap_4_horizontal_layout.html.twig']
+
+when@test:
+    twig:
+        strict_variables: true

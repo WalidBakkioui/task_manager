@@ -1,0 +1,128 @@
+{% extends 'layouts/car.html.twig' %}
+{% block headerContent %}
+    <header class="header" data-header>
+        <div class="container">
+
+            <div class="overlay" data-overlay></div>
+
+            <a href="{{ url('app_home') }}" class="logo">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Ridex logo">
+            </a>
+
+            <div class="header-actions">
+
+
+                <a href="{{ url('app_home') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Accueil</span>
+                </a>
+                {% if app.user and is_granted('ROLE_ADMIN')%}
+                    <ul class="admin-nav-ul">
+                        <li class="admin-nav-li">
+                            <a href="#" class="btn admin-nav-a" aria-labelledby="aria-label-txt ">Admin</a>
+                            <ul class="admin-nav-ul">
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('ajout_create') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajoutez Voiture</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('createPhoto') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajout photo</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('list_users') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Utilisateur</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('article_list') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Article</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                {% endif %}
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                    {# Affiche le lien vers la page de profil sauf si l'utilisateur a ROLE_NOT et ROLE_USER #}
+                    <a href="{{ url('profil') }}" class="btn user-btn" aria-label="Profile">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </a>
+                {% endif %}
+                <a href="{{ url('app_contact') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Contact</span>
+                </a>
+
+
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_NOT') %}
+                    <a href="{{ url('app_logout', {_target_path: path('app_login')}) }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Déconnexion</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Connexion</span>
+                    </a>
+                {% endif %}
+
+                <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+                    <span class="one"></span>
+                    <span class="two"></span>
+                    <span class="three"></span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <article>
+
+            <section class="section hero" id="home">
+                <div class="container">
+
+                    <div class="hero-content">
+                        <h2 class="h1 hero-title">Ajoutez une voiture</h2>
+                    </div>
+
+                    <div class="hero-banner hero-banner-two"></div>
+
+                    <form action="" class="hero-form">
+
+                        <div class="input-wrapper">
+                            <label for="input-1" class="input-label">Marque</label>
+
+                            <input type="text" name="car-model" id="input-1" class="input-field"
+                                   placeholder="ex:">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-2" class="input-label">Modèle</label>
+
+                            <input type="text" name="monthly-pay" id="input-2" class="input-field" placeholder="ex:">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-3" class="input-label">Annee</label>
+
+                            <input type="date" name="year" id="input-3" class="input-field">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-3" class="input-label">image</label>
+
+                            <input type="file" name="year" id="input-4" class="input-field">
+                        </div>
+
+                        <button type="submit" class="btn">Ajoutez</button>
+
+                    </form>
+
+                </div>
+            </section>
+        </article>
+    </main>
+{% endblock %}

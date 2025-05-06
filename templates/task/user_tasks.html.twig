@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tâches de {{ user.username }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Tâches de <span class="text-primary">{{ user.username }}</span></h2>
+            <a href="{{ path('task_admin') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour Admin
+            </a>
+        </div>
+
+        <div class="table-responsive shadow-sm rounded-3 overflow-hidden">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-primary">
+                <tr>
+                    <th scope="col">#ID</th>
+                    <th scope="col">Titre</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Créer le</th>
+                    <th scope="col">Statut</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr class="{% if task.completed %}table-success{% else %}table-warning{% endif %}">
+                        <td class="fw-semibold">{{ task.id }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.description }}</td>
+                        <td>{{ task.createdAt ? task.createdAt|date('d/m/Y') : 'Non renseignée' }}</td>
+                        <td>
+                            {% if task.completed %}
+                                <span class="badge rounded-pill bg-success">Terminée</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-warning text-dark">En cours</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Aucune tâche pour cet utilisateur.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

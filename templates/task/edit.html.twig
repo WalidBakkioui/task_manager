@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Tâche{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Modifier la tâche</h3>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.title, { attr: { class: 'form-control', placeholder: 'Titre de la tâche' } }) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.description, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.description, { attr: { class: 'form-control', rows: 3, placeholder: 'Description (optionnelle)' } }) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.dueDate, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                                {{ form_widget(form.dueDate, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.dueDate) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.priority, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                                {{ form_widget(form.priority, { attr: { class: 'form-select' } }) }}
+                                {{ form_errors(form.priority) }}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('task_index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left-circle me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save2 me-1"></i> Enregistrer
+                            </button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

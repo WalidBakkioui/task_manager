@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('task_index') }}">Panneau Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_history') }}">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Gestion des utilisateurs</h2>
+
+        <form method="get" action="{{ path('task_admin') }}" class="row g-3 mb-4 search-users">
+            <div class="col-md-3">
+                <input type="text" id="searchUsername" name="searchUsername" class="form-control" placeholder="Nom d'utilisateur" value="{{ app.request.query.get('searchUsername') }}">
+            </div>
+            <div class="col-md-3">
+                <input type="email" id="searchEmail" name="searchEmail" class="form-control" placeholder="Email" value="{{ app.request.query.get('searchEmail') }}">
+            </div>
+            <div class="col-md-3">
+                <select id="searchRole" name="searchRole" class="form-select">
+                    <option value="">Rôle</option>
+                    <option value="Utilisateur" {% if app.request.query.get('searchRole') == 'Utilisateur' %}selected{% endif %}>Utilisateur</option>
+                    <option value="Admin" {% if app.request.query.get('searchRole') == 'Admin' %}selected{% endif %}>Admin</option>
+                    <option value="Super Admin" {% if app.request.query.get('searchRole') == 'Super Admin' %}selected{% endif %}>Super Admin</option>
+                    <option value="Banni" {% if app.request.query.get('searchRole') == 'Banni' %}selected{% endif %}>Banni</option>
+                </select>
+
+            </div>
+            <div class="col-md-3 d-flex align-items-end justify-content-between">
+                <button type="submit" class="btn btn-primary btn-sm w-50 me-2"><i class="bi bi-search"></i></button>
+                <a href="{{ path('task_admin') }}" class="btn btn-outline-secondary btn-lg w-50"><i class="bi bi-arrow-counterclockwise"></i></a>
+            </div>
+        </form>
+
+
+        <div class="table-responsive task-table">
+            <table class="table table-bordered table-striped shadow-sm">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom d'utilisateur</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if users is not empty %}
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    Admin
+                                {% elseif 'ROLE_SUPER_ADMIN' in user.roles %}
+                                    Super Admin
+                                {% elseif 'ROLE_BANNED' in user.roles %}
+                                    Banni
+                                {% else %}
+                                    Utilisateur
+                                {% endif %}
+                            </td>
+                            <td class="btn-actions d-flex gap-2">
+                                <a href="{{ path('admin_user_tasks', {'id': user.id}) }}" class="btn btn-info btn-sm" title="Voir les tâches">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    {% if 'ROLE_ADMIN' not in user.roles and 'ROLE_SUPER_ADMIN' not in user.roles %}
+                                        <form method="post" action="{{ path('admin_user_promote', {'id': user.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('promote-user-' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-warning btn-sm" title="Promouvoir Admin">
+                                                <i class="bi bi-shield-lock"></i>
+                                            </button>
+                                        </form>
+                                    {% elseif 'ROLE_ADMIN' in user.roles %}
+                                        <form method="post" action="{{ path('admin_user_demote', {'id': user.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('demote-user-' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Rétrograder en utilisateur">
+                                                <i class="bi bi-shield-slash"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+
+                                    {% if 'ROLE_BANNED' in user.roles %}
+                                        <form method="post" action="{{ path('admin_user_unban', {'id': user.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('unban-user-' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-success btn-sm" title="Débannir l'utilisateur">
+                                                <i class="bi bi-person-check"></i>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{{ path('admin_user_ban', {'id': user.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('ban-user-' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-secondary btn-sm" title="Bannir l'utilisateur">
+                                                <i class="bi bi-person-x"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+
+                                <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            Aucun utilisateur trouvé 🔍
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

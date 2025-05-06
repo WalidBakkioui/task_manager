@@ -1,0 +1,171 @@
+{% extends 'layouts/car.html.twig' %}
+{#{% import 'layouts/macros/category-tags.html.twig' as tags %}#}
+
+{% block headerContent %}
+    <header class="header" data-header>
+        <div class="container">
+
+            <div class="overlay" data-overlay></div>
+
+            <a href="{{ url('app_home') }}" class="logo">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Ridex logo">
+            </a>
+
+            <div class="header-actions">
+
+
+                <a href="{{ url('app_home') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Accueil</span>
+                </a>
+                {% if app.user and is_granted('ROLE_ADMIN')%}
+                    <ul class="admin-nav-ul">
+                        <li class="admin-nav-li">
+                            <a href="#" class="btn admin-nav-a" aria-labelledby="aria-label-txt ">Admin</a>
+                            <ul class="admin-nav-ul">
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('ajout_create') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajoutez Voiture</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('createPhoto') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Ajout photo</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('list_users') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Utilisateur</span>
+                                    </a>
+                                </li>
+                                <li class="admin-nav-li">
+                                    <a href="{{ url('article_list') }}" class="btn admin-nav-a" aria-labelledby="aria-label-txt">
+                                        <span class="aria-label-txt">Article</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                {% endif %}
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                    {# Affiche le lien vers la page de profil sauf si l'utilisateur a ROLE_NOT et ROLE_USER #}
+                    <a href="{{ url('profil') }}" class="btn user-btn" aria-label="Profile">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </a>
+                {% endif %}
+                <a href="{{ url('app_contact') }}" class="btn" aria-labelledby="aria-label-txt">
+                    <span id="aria-label-txt">Contact</span>
+                </a>
+
+
+            {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_NOT') %}
+                    <a href="{{ url('app_logout', {_target_path: path('app_login')}) }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Déconnexion</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-red" aria-labelledby="aria-label-txt">
+                        <span class="aria-label-txt">Connexion</span>
+                    </a>
+                {% endif %}
+
+                <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+                    <span class="one"></span>
+                    <span class="two"></span>
+                    <span class="three"></span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <section class="section hero" id="home">
+
+            <div class="container">
+                {% if is_granted('ROLE_NOT') %}
+                    <h2 class="space-title-profil">Votre compte est bloqué, dirigé vous sur la <br> page contact pour vous débloqué.</h2>
+                {% endif %}
+
+                <div class="hero-content">
+                    <h2 class="h1 hero-title">Trouvez une voiture</h2>
+                </div>
+
+                <div class="hero-banner"></div>
+
+                <div class="filter-form">
+                    <form action="{{ path('app_home') }}" method="get" class="hero-form">
+                        <div class="input-wrapper">
+                            <label for="input-category" class="input-label">Marque</label>
+                            <select name="category" id="input-category" class="input-field">
+                                <option value="">Toutes les marques</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if app.request.query.get('category') == category.id %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-title" class="input-label">Modèle</label>
+                            <input type="text" name="title" id="input-title" class="input-field" value="{{ app.request.query.get('title') }}">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-max-people" class="input-label">Nombre de personnes</label>
+                            <select name="max_people" id="input-max-people" class="input-field">
+                                <option value="">Tous</option>
+                                <option value="2" {% if app.request.query.get('max_people') == '2' %}selected{% endif %}>2</option>
+                                <option value="4" {% if app.request.query.get('max_people') == '4' %}selected{% endif %}>4</option>
+                                <option value="5" {% if app.request.query.get('max_people') == '5' %}selected{% endif %}>5</option>
+                            </select>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-type" class="input-label">Type</label>
+                            <input type="text" name="type" id="input-type" class="input-field" value="{{ app.request.query.get('type') }}">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-consumption" class="input-label">Consommation</label>
+                            <input type="text" name="consumption" id="input-consumption" class="input-field" value="{{ app.request.query.get('consumption') }}">
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-box" class="input-label">Boîte</label>
+                            <select name="box" id="input-box" class="input-field">
+                                <option value="">Toutes les boîtes</option>
+                                <option value="auto" {% if app.request.query.get('box') == 'auto' %}selected{% endif %}>Auto</option>
+                                <option value="manuel" {% if app.request.query.get('box') == 'manuel' %}selected{% endif %}>Manuel</option>
+                            </select>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="input-years" class="input-label">Année</label>
+                            <input type="text" name="years" id="input-years" class="input-field" value="{{ app.request.query.get('years') }}">
+                        </div>
+
+                        <button type="submit" class="btn">Rechercher</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="section featured-car" id="featured-car">
+            <div class="container">
+                <div class="title-wrapper">
+                    <h2 class="h2 section-title">Catalogue</h2>
+                </div>
+                <ul class="featured-car-list" id="filtered-posts">
+                    {% for post in posts %}
+                        {% include 'pages/includes/article.html.twig' %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    </main>
+
+{% endblock %}
+

@@ -1,0 +1,104 @@
+{% import 'layouts/macros/category-tags.html.twig' as tags %}
+<article>
+
+    {#  Sert a afficher le nom des categories  #}
+    {#    {{ post.category.name }}#}
+
+{#    <li data-category-id="{{ post.category.id }}">#}
+        <div class="featured-car-card">
+            <figure class="card-banner">
+                {% set photoUrl = photoOrDefault(post) %}
+
+                {% if photoUrl is defined %}
+                    <img src="{{ photoUrl }}" alt="Forza" loading="lazy" width="440" height="300" class="w-100">
+                {% else %}
+                    <p>Error rendering image</p>
+                {% endif %}
+
+            </figure>
+
+            <div class="card-content">
+
+                <div class="card-title-wrapper">
+                    <h3 class="h3 card-title">
+                        {{ post.title }}
+                        {% if app.user and is_granted('ROLE_ADMIN')%}
+                            {% if app.user == post.user %}
+                                <a href="{{ url('ajout_edit', {id: post.id}) }}">EDITER</a>
+                                <a href="{{ path('delete_blog_post', {'id': post.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">SUPPRIMER</a>
+                            {% endif %}
+                        {% endif %}
+                    </h3>
+
+                    <data class="year" value="2021">{{ post.years }}</data>
+                </div>
+
+                <ul class="card-list">
+
+                    <li class="card-list-item">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span class="card-item-text">{{ post.maxPeople }}</span>
+                    </li>
+
+                    <li class="card-list-item">
+                        <ion-icon name="car-outline"></ion-icon>
+                        <span class="card-item-text">{{ post.type }}</span>
+                    </li>
+
+                    <li class="card-list-item">
+                        <ion-icon name="speedometer-outline"></ion-icon>
+                        <span class="card-item-text">{{ post.consumption }}</span>
+                    </li>
+
+                    <li class="card-list-item">
+                        <ion-icon name="hardware-chip-outline"></ion-icon>
+                        <span class="card-item-text">{{ post.box }}</span>
+                    </li>
+
+                </ul>
+
+                <div class="card-price-wrapper">
+
+                    {#                    <button class="btn fav-btn" aria-label="Add to favourite list">#}
+                    {#                        <ion-icon name="heart-outline"></ion-icon>#}
+                    {#                    </button>#}
+
+
+                    <div class="featured-car-card">
+                        <ul>
+                            {% for category in getCategories() %}
+                                {% if post.category == category %}
+                                    <li><a href="{{ url('app_doctrine_category', {name: category.name}) }}">{{ tags.comment(post.category.name) }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    {#                    {% if post is defined %}#}
+                    {#                        <a href="{{ url('link', {id: post.id}) }}">{{ tags.comment('Commentez') }}</a>#}
+                    {#                    {% endif %}#}
+
+                    {% if post is defined %}
+                        <script>
+                            function showMessageIfNotLoggedIn(url) {
+                                alert("Vous n'êtes pas connecté. Connectez-vous pour commenter.");
+                            }
+                        </script>
+
+                        {% set commentLink = is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') ? url('link', {id: post.id, 'view_comment': 1}) : '#' %}
+                        <a href="{{ commentLink }}"
+                                {% if not (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
+                                    onclick="showMessageIfNotLoggedIn('{{ url('link', {id: post.id, 'view_comment': 1}) }}')"
+                                {% endif %}
+                        >
+                            {{ tags.comment('Voir plus') }}
+                        </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+{#    </li>#}
+
+</article>

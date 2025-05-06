@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionnaire de Tâches{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('task_index') }}">Gestionnaire de Tâches</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('task_admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_history') }}">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        {% if app.user %}
+            <h3 class="text-center text-primary mb-4">
+                Bienvenue <strong>{{ app.user.username }}</strong> 👋 !
+            </h3>
+        {% endif %}
+
+        <h2 class="text-center">Mes Tâches</h2>
+
+        <p class="text-center text-muted">Ajoutez, recherchez et gérez vos tâches quotidiennes simplement. Cliquez sur "Ajouter la tâche" pour enregistrer une nouvelle tâche dans votre liste.</p>
+
+        {{ form_start(form, { attr: { class: 'row g-3 mt-4' } }) }}
+        <div class="col-md-6">
+            {{ form_label(form.title, 'Nom de la tâche', { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.title, { attr: { class: 'form-control', placeholder: 'Ex: Finaliser le rapport' } }) }}
+        </div>
+
+        <div class="col-md-3">
+            {{ form_label(form.dueDate, 'Date limite', { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.dueDate, { attr: { class: 'form-control' } }) }}
+        </div>
+
+        <div class="col-md-3">
+            {{ form_label(form.priority, 'Priorité', { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.priority, { attr: { class: 'form-select' } }) }}
+        </div>
+
+        <div class="col-12">
+            {{ form_label(form.description, 'Description', { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.description, { attr: { class: 'form-control', rows: 2, placeholder: 'Ajoutez des détails supplémentaires ici...' } }) }}
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Ajouter la tâche</button>
+        </div>
+        {{ form_end(form) }}
+
+
+        <!-- Barre de recherche -->
+        <form method="get" action="{{ path('task_index') }}" class="row g-3 mt-4 search-filters">
+            <div class="col-md-3">
+                <input type="text" name="searchTitle" value="{{ app.request.query.get('searchTitle') }}" class="form-control" placeholder="Rechercher par tâche">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="searchDate" value="{{ app.request.query.get('searchDate') }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <select name="searchPriority" class="form-select">
+                    <option value="">Sélectionner priorité</option>
+                    <option value="faible" {% if app.request.query.get('searchPriority') == 'faible' %}selected{% endif %}>Faible</option>
+                    <option value="moyenne" {% if app.request.query.get('searchPriority') == 'moyenne' %}selected{% endif %}>Moyenne</option>
+                    <option value="élevée" {% if app.request.query.get('searchPriority') == 'élevée' %}selected{% endif %}>Élevée</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary btn-lg w-50">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="{{ path('task_index') }}" class="btn btn-outline-secondary btn-lg w-50">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </div>
+        </form>
+
+
+        <ul class="list-group mt-4" id="taskList">
+            {% for task in tasks %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            {{ task.title }}
+                            / Date: {{ task.dueDate ? task.dueDate|date('Y-m-d') : 'Aucune date' }}
+                            / Priorité: {{ task.priority|capitalize }}
+                        </div>
+                        <span class="btn-actions">
+                            {# Nouveau bouton Description - placé avant "Terminer" #}
+                            {% if task.description %}
+                                <button class="btn btn-secondary btn-sm"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#desc-{{ task.id }}"
+                                        aria-expanded="false"
+                                        aria-controls="desc-{{ task.id }}">
+                                    <i class="bi bi-card-text"></i>
+                                </button>
+                            {% endif %}
+
+                            {% if not task.completed %}
+                                <a href="{{ path('task_complete', {id: task.id}) }}" class="btn btn-success btn-sm">
+                                    <i class="bi bi-check-lg"></i> <!-- Icône Check -->
+                                </a>
+                            {% else %}
+                                <span class="badge bg-success">Terminée</span>
+                            {% endif %}
+                            <a href="{{ path('task_edit', {id: task.id}) }}" class="btn btn-info btn-sm">
+                                <i class="bi bi-pencil-square"></i> <!-- Icône Crayon -->
+                            </a>
+                            <form method="post"
+                                  action="{{ path('task_delete', {id: task.id}) }}"
+                                  class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-task-' ~ task.id) }}">
+                                <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </span>
+                    </div>
+
+                    {# Contenu collapsible #}
+                    {% if task.description %}
+                        <div class="collapse mt-2" id="desc-{{ task.id }}">
+                            <div class="card card-body py-2">
+                                {{ task.description }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="list-group-item text-center text-muted">Aucune tâche enregistrée.</li>
+            {% endfor %}
+        </ul>
+
+        <div class="text-center mt-4 mb-5">
+            <a href="{{ path('task_history') }}" class="btn btn-secondary">Voir l'historique des tâches terminées</a>
+        </div>
+    </div>
+{% endblock %}
