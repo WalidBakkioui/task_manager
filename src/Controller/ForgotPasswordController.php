@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,14 +35,15 @@ class ForgotPasswordController extends AbstractController
                 $user->setResetToken($token);
                 $em->flush();
 
-                $resetUrl = $this->generateUrl('reset_password', ['token' => $token], 0);
+                $resetUrl = $this->generateUrl('reset_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+
 
                 $email = (new Email())
-                    ->from('noreply@monsite.local')
+                    ->from('walid-bakkioui@task-manager.be')
                     ->to($user->getEmail())
                     ->subject('Réinitialisation du mot de passe')
                     ->html('<p>Pour réinitialiser votre mot de passe, cliquez ici : 
-                        <a href="http://localhost:8000' . $resetUrl . '">Réinitialiser le mot de passe</a></p>');
+                        <a href="https://task-manager.be' . $resetUrl . '">Réinitialiser le mot de passe</a></p>');
 
                 $mailer->send($email);
 
