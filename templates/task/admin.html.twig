@@ -77,10 +77,6 @@
                                 {% endif %}
                             </td>
                             <td class="btn-actions d-flex gap-2">
-                                <a href="{{ path('admin_user_tasks', {'id': user.id}) }}" class="btn btn-info btn-sm" title="Voir les tâches">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-
                                 <form method="post" action="{{ path('admin_user_tasks', {'id': user.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('read-user-' ~ user.id) }}">
                                     <button type="submit" class="btn btn-info btn-sm" title="Voir les tâches">
