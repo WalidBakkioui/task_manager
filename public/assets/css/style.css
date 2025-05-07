@@ -1,0 +1,417 @@
+/* Global Styles */
+body {
+  background: #f4f7fc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.text-muted {
+  font-size: 0.95rem;
+}
+
+.card {
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #212529;
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.card .text-muted {
+  font-size: 0.85rem;
+}
+
+.btn-primary, .btn-secondary, .btn-danger, .btn-success {
+  border-radius: 25px;
+  padding: 10px 20px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.table {
+  margin-top: 20px;
+}
+
+.table th {
+  background-color: #f1f1f1;
+}
+
+.search-bar input {
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  width: 300px;
+  margin-bottom: 30px;
+}
+
+.task-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.task-table .card-body {
+  padding: 20px;
+}
+
+.btn-actions {
+  display: flex;
+  gap: 0.5rem; /* espace horizontal entre les boutons */
+  flex-wrap: wrap;
+}
+
+.btn-actions .btn {
+  border-radius: 25px;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+.modifier-btn:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+  color: white;
+}
+
+.btn {
+  border-radius: 50px !important; /* arrondi standard Bootstrap */
+}
+
+form .form-label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+form .form-control,
+form .form-select {
+  border-radius: 0.75rem;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form .form-control:focus,
+form .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+form button[type="submit"] {
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* --- Liste de tâches --- */
+#taskList {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.list-group-item {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-left: 5px solid #007bff;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* --- Recherche dans historique --- */
+#searchTitle,
+#searchDate,
+#searchLevel {
+  border-radius: 25px;
+  padding: 10px 16px;
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+#searchTitle:focus,
+#searchDate:focus,
+#searchLevel:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* --- Barre de recherche personnalisée --- */
+.search-filters {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+}
+
+.search-filters .form-control,
+.search-filters .form-select {
+  border-radius: 25px;
+  padding: 10px 16px;
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.search-filters .form-control:focus,
+.search-filters .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* --- Page Index - Bouton de Recherche --- */
+#searchButtonIndex {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+#searchButtonIndex:hover {
+  background-color: #0056b3;
+  border-color: #004a99;
+  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
+}
+
+
+/* --- Bouton Rechercher (historique) --- */
+#searchButton {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  border-radius: 50px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+#searchButton:hover {
+  background-color: #0056b3;
+  border-color: #004a99;
+  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
+}
+a.btn-secondary {
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* --- Section de recherche Admin --- */
+.search-users {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.search-users .form-control,
+.search-users .form-select {
+  border-radius: 25px;
+  padding: 10px 16px;
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.search-users .form-control:focus,
+.search-users .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* --- Bouton Rechercher --- */
+#searchUserButton {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+#searchUserButton:hover {
+  background-color: #0056b3;
+  border-color: #004a99;
+  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
+}
+
+/* --- Table --- */
+.table {
+  margin-top: 20px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.task-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* --- Boutons globalement --- */
+.btn {
+  border-radius: 50px !important;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-info:hover {
+  background-color: #0dcaf0;
+  border-color: #0ba5c0;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .search-users .form-control,
+  .search-users .form-select {
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .btn-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-actions .btn {
+    width: 100%;
+  }
+
+  #searchButton {
+    width: 100%;
+  }
+
+  #searchTitle,
+  #searchDate,
+  #searchLevel {
+    margin-bottom: 10px;
+  }
+
+  .row.g-4 > div {
+    margin-bottom: 20px;
+  }
+
+  .table-responsive {
+    margin-bottom: 20px; /* Un peu d'espace en bas */
+}
+
+.table {
+    width: 100%;
+    overflow-x: auto; /* Pour permettre le défilement horizontal */
+    display: block;
+}
+}
