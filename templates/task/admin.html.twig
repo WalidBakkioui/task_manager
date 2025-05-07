@@ -81,6 +81,13 @@
                                     <i class="bi bi-eye"></i>
                                 </a>
 
+                                <form method="post" action="{{ path('admin_user_tasks', {'id': user.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('read-user-' ~ user.id) }}">
+                                    <button type="submit" class="btn btn-info btn-sm" title="Voir les tâches">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </form>
+
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                                     {% if 'ROLE_ADMIN' not in user.roles and 'ROLE_SUPER_ADMIN' not in user.roles %}
                                         <form method="post" action="{{ path('admin_user_promote', {'id': user.id}) }}" class="d-inline">
