@@ -41,8 +41,9 @@ class ForgotPasswordController extends AbstractController
                     ->from('walid-bakkioui@task-manager.be')
                     ->to($user->getEmail())
                     ->subject('Réinitialisation du mot de passe')
-                    ->html('<p>Pour réinitialiser votre mot de passe, cliquez ici : 
-                        <a href="https://task-manager.be' . $resetUrl . '">Réinitialiser le mot de passe</a></p>');
+                    ->html($this->renderView('emails/reset_password.html.twig', [
+                        'resetToken' => $token
+                    ]));
 
                 $mailer->send($email);
 
