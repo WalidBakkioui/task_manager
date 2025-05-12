@@ -98,7 +98,6 @@
                             / Priorité: {{ task.priority|capitalize }}
                         </div>
                         <span class="btn-actions">
-                            {# Nouveau bouton Description - placé avant "Terminer" #}
                             {% if task.description %}
                                 <button class="btn btn-secondary btn-sm"
                                         type="button"
@@ -129,7 +128,6 @@
                         </span>
                     </div>
 
-                    {# Contenu collapsible #}
                     {% if task.description %}
                         <div class="collapse mt-2" id="desc-{{ task.id }}">
                             <div class="card card-body py-2">
