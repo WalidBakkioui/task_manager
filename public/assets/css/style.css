@@ -371,6 +371,15 @@ a.btn-secondary {
   .container {
     padding-left: 15px;
     padding-right: 15px;
+    margin-bottom: 50px;
+  }
+
+  .card {
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
   }
 
   .search-users .form-control,
@@ -380,6 +389,7 @@ a.btn-secondary {
 
   .btn {
     width: 100%;
+    margin-bottom: 10px;
   }
 
   .btn-actions {
@@ -403,6 +413,10 @@ a.btn-secondary {
 
   .row.g-4 > div {
     margin-bottom: 20px;
+  }
+
+  .row.g-5 {
+    margin-bottom: 30px;
   }
 
   .table-responsive {
