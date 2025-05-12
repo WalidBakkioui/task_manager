@@ -41,7 +41,7 @@ class ForgotPasswordController extends AbstractController
 
                 try {
                     $email = (new Email())
-                        ->from('walid-bakkioui@task-manager.be') // ✅ doit être vérifié sur MailerSend
+                        ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net') // ✅ doit être vérifié sur MailerSend
                         ->to($user->getEmail())
                         ->subject('Réinitialisation du mot de passe')
                         ->html($this->renderView('emails/reset_password.html.twig', [
@@ -100,7 +100,7 @@ class ForgotPasswordController extends AbstractController
     public function testMail(MailerInterface $mailer): Response
     {
         $email = (new Email())
-            ->from('walid-bakkioui@task-manager.be')  // L'adresse doit être bien vérifiée dans MailerSend
+            ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net')  // L'adresse doit être bien vérifiée dans MailerSend
             ->to('walid.bakkioui@hotmail.com')             // Utilise une adresse réelle
             ->subject('Test MailerSend SMTP')
             ->text('Si tu lis ceci, c’est que l’envoi fonctionne !');
