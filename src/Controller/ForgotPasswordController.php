@@ -64,7 +64,7 @@ class ForgotPasswordController extends AbstractController
     }
 
     // ... resetPassword inchangé
-}
+
 
 
 
