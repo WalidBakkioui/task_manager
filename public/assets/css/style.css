@@ -380,7 +380,7 @@ footer {
   }
 
   .card {
-    margin-bottom: 20px;
+    margin-bottom: 200px;
   }
 
   .card-title {
@@ -425,12 +425,12 @@ footer {
   }
 
   .table-responsive {
-    margin-bottom: 20px; /* Un peu d'espace en bas */
-}
+    margin-bottom: 20px;
+  }
 
-.table {
-    width: 100%;
-    overflow-x: auto; /* Pour permettre le défilement horizontal */
-    display: block;
-}
+  .table {
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+  }
 }
