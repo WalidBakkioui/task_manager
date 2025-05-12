@@ -2,7 +2,6 @@
 body {
   background: #f4f7fc;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding-bottom: 60px;
 }
 
 .navbar {
@@ -23,7 +22,6 @@ h2 {
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease;
-  margin-bottom: 20px;
 }
 
 .card:hover {
@@ -368,10 +366,6 @@ a.btn-secondary {
   border-color: #bd2130;
 }
 
-footer {
-  margin-top: auto;
-}
-
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .container {
@@ -381,7 +375,7 @@ footer {
   }
 
   .card {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   .card-title {
@@ -391,10 +385,6 @@ footer {
   .search-users .form-control,
   .search-users .form-select {
     margin-bottom: 10px;
-  }
-
-  .form-control {
-    margin-bottom: 20px;
   }
 
   .btn {
@@ -430,12 +420,12 @@ footer {
   }
 
   .table-responsive {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Un peu d'espace en bas */
   }
 
   .table {
       width: 100%;
-      overflow-x: auto;
+      overflow-x: auto; /* Pour permettre le défilement horizontal */
       display: block;
   }
 }
