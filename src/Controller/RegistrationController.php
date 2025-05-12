@@ -21,6 +21,11 @@ class RegistrationController extends AbstractController
             $password = $request->request->get('password');
             $confirmPassword = $request->request->get('confirmPassword');
 
+            if (empty($username) || strlen($username) > 16) {
+                $this->addFlash('error', 'Le nom d’utilisateur ne peut pas dépasser 16 caractères.');
+                return $this->redirectToRoute('app_register');
+            }
+
             if ($password !== $confirmPassword) {
                 $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
                 return $this->redirectToRoute('app_register');
