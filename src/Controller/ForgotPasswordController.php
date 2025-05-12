@@ -63,11 +63,6 @@ class ForgotPasswordController extends AbstractController
         return $this->render('security/forgot_password.html.twig');
     }
 
-    // ... resetPassword inchangé
-
-
-
-
 #[Route('/reset-password/{token}', name: 'reset_password')]
     public function resetPassword(string $token, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -94,20 +89,6 @@ class ForgotPasswordController extends AbstractController
         }
 
         return $this->render('security/reset_password.html.twig', ['token' => $token]);
-    }
-
-    #[Route('/test-mail', name: 'test_mail')]
-    public function testMail(MailerInterface $mailer): Response
-    {
-        $email = (new Email())
-            ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net')  // L'adresse doit être bien vérifiée dans MailerSend
-            ->to('walid.bakkioui@hotmail.com')             // Utilise une adresse réelle
-            ->subject('Test MailerSend SMTP')
-            ->text('Si tu lis ceci, c’est que l’envoi fonctionne !');
-
-        $mailer->send($email);
-
-        return new Response('E-mail envoyé (si tout va bien)');
     }
 
 }

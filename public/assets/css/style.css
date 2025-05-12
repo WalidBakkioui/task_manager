@@ -4,6 +4,10 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body, html {
+  overflow-x: hidden;  /* Cela empêche le défilement horizontal */
+}
+
 .navbar {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -368,6 +372,10 @@ a.btn-secondary {
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
+  * {
+    box-sizing: border-box;
+  }
+
   .container {
     padding-left: 15px;
     padding-right: 15px;
@@ -420,12 +428,21 @@ a.btn-secondary {
   }
 
   .table-responsive {
-    margin-bottom: 20px; /* Un peu d'espace en bas */
+    margin-bottom: 20px;
+    overflow-x: auto;
   }
 
   .table {
       width: 100%;
-      overflow-x: auto; /* Pour permettre le défilement horizontal */
+      overflow-x: auto;
       display: block;
+  }
+
+  img, .form-control, .card, .btn {
+    max-width: 100%;
+  }
+
+  .container, .card, .row {
+    width: 100%;
   }
 }
