@@ -16,11 +16,13 @@
 
     {% block body %}{% endblock %}
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container">
-            <p>2025 | Created by Walid Bakkioui</p>
-        </div>
-    </footer>
+    {% block footer %}
+        <footer class="bg-dark text-white text-center py-3 mt-auto">
+            <div class="container">
+                <p>2025 | Created by Walid Bakkioui</p>
+            </div>
+        </footer>
+    {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
