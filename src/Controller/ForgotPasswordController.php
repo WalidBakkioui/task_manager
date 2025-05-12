@@ -95,4 +95,19 @@ class ForgotPasswordController extends AbstractController
 
         return $this->render('security/reset_password.html.twig', ['token' => $token]);
     }
+
+    #[Route('/test-mail', name: 'test_mail')]
+    public function testMail(MailerInterface $mailer): Response
+    {
+        $email = (new Email())
+            ->from('walid-bakkioui@task-manager.be')  // L'adresse doit être bien vérifiée dans MailerSend
+            ->to('walid.bakkioui@hotmail.com')             // Utilise une adresse réelle
+            ->subject('Test MailerSend SMTP')
+            ->text('Si tu lis ceci, c’est que l’envoi fonctionne !');
+
+        $mailer->send($email);
+
+        return new Response('E-mail envoyé (si tout va bien)');
+    }
+
 }
