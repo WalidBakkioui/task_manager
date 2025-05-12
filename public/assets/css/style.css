@@ -23,6 +23,7 @@ h2 {
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease;
+  margin-bottom: 20px;
 }
 
 .card:hover {
@@ -380,7 +381,7 @@ footer {
   }
 
   .card {
-    margin-bottom: 200px;
+    margin-bottom: 30px;
   }
 
   .card-title {
@@ -390,6 +391,10 @@ footer {
   .search-users .form-control,
   .search-users .form-select {
     margin-bottom: 10px;
+  }
+
+  .form-control {
+    margin-bottom: 20px;
   }
 
   .btn {
