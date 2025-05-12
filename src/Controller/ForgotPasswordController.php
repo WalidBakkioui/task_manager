@@ -15,8 +15,12 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Uid\Uuid;
 
-class ForgotPasswordController extends AbstractController
+    /**
+     * @throws TransportExceptionInterface
+     */
+    // ... use statements inchangés
 
+class ForgotPasswordController extends AbstractController
 {
     /**
      * @throws TransportExceptionInterface
@@ -26,38 +30,45 @@ class ForgotPasswordController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $emailInput = $request->request->get('email');
-
             $user = $em->getRepository(User::class)->findOneBy(['email' => $emailInput]);
 
             if ($user) {
-                $token = Uuid::v4()->toRfc4122(); // génère un token unique
+                $token = Uuid::v4()->toRfc4122();
                 $user->setResetToken($token);
                 $em->flush();
 
                 $resetUrl = $this->generateUrl('reset_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
+                try {
+                    $email = (new Email())
+                        ->from('walid-bakkioui@task-manager.be') // ✅ doit être vérifié sur MailerSend
+                        ->to($user->getEmail())
+                        ->subject('Réinitialisation du mot de passe')
+                        ->html($this->renderView('emails/reset_password.html.twig', [
+                            'resetToken' => $token,
+                            'resetUrl' => $resetUrl
+                        ]));
 
-                $email = (new Email())
-                    ->from('walid-bakkioui@task-manager.be')
-                    ->to($user->getEmail())
-                    ->subject('Réinitialisation du mot de passe')
-                    ->html($this->renderView('emails/reset_password.html.twig', [
-                        'resetToken' => $token
-                    ]));
+                    $mailer->send($email);
 
-                $mailer->send($email);
-
-                $this->addFlash('success', 'Un email de réinitialisation a été envoyé.');
+                    $this->addFlash('success', '📬 Un email de réinitialisation a été envoyé à votre adresse.');
+                } catch (\Exception $e) {
+                    $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
+                }
             } else {
-                $this->addFlash('error', 'Aucun compte avec cet email.');
+                $this->addFlash('error', '⚠️ Aucun compte associé à cette adresse email.');
             }
         }
 
         return $this->render('security/forgot_password.html.twig');
     }
 
+    // ... resetPassword inchangé
 
-    #[Route('/reset-password/{token}', name: 'reset_password')]
+
+
+
+#[Route('/reset-password/{token}', name: 'reset_password')]
     public function resetPassword(string $token, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
