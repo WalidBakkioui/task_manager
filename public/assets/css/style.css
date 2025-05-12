@@ -2,6 +2,7 @@
 body {
   background: #f4f7fc;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-bottom: 60px;
 }
 
 .navbar {
@@ -364,6 +365,10 @@ a.btn-secondary {
 .btn-danger:hover {
   background-color: #c82333;
   border-color: #bd2130;
+}
+
+footer {
+  margin-top: auto;
 }
 
 /* --- Responsive --- */
