@@ -68,12 +68,14 @@
                                 </p>
                             </div>
                             <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <form method="post" action="{{ path('task_history_delete', {'id': task.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-task-' ~ task.id) }}">
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <span class="btn-actions">
+                                    <form method="post" action="{{ path('task_history_delete', {'id': task.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-task-' ~ task.id) }}">
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </span>
                                 <span class="btn-actions">
                                     {% if task.description %}
                                         <button class="btn btn-secondary btn-sm"
