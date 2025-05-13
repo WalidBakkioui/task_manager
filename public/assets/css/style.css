@@ -396,8 +396,21 @@ a.btn-secondary {
   }
 
   .btn {
-    width: 100%;
+    width: 48%;
     margin-bottom: 10px;
+  }
+
+  .d-flex {
+    justify-content: space-between;
+  }
+
+  .bi {
+    font-size: 1.1rem;
+  }
+
+  .btn-outline-secondary, .btn-primary {
+    padding: 8px 12px;
+    font-size: 0.9rem;
   }
 
   .btn-actions {
