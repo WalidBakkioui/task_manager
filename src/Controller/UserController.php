@@ -33,6 +33,16 @@ class UserController extends AbstractController
                 $password = $request->request->get('new_password');
                 $confirmPassword = $request->request->get('confirm_password');
 
+                if (
+                    strlen($password) < 8 ||
+                    !preg_match('/[A-Z]/', $password) ||
+                    !preg_match('/[a-z]/', $password) ||
+                    !preg_match('/\d/', $password)
+                ) {
+                    $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
+                    return $this->redirectToRoute('user_profile');
+                }
+
                 if ($password === $confirmPassword) {
                     $user->setPassword(
                         $passwordHasher->hashPassword($user, $password)
@@ -43,10 +53,9 @@ class UserController extends AbstractController
                 } else {
                     $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
                 }
-            }
 
-            return $this->redirectToRoute('user_profile');
-        }
+                return $this->redirectToRoute('user_profile');
+            }
 
         return $this->render('task/profile.html.twig', [
             'user' => $user,
