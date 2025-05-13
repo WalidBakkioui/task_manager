@@ -58,7 +58,7 @@ class ForgotPasswordController extends AbstractController
         return $this->render('security/forgot_password.html.twig');
     }
 
-    #[Route('/reset-password/{token}', name: 'reset_password')]
+#[Route('/reset-password/{token}', name: 'reset_password')]
     public function resetPassword(string $token, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
@@ -92,5 +92,4 @@ class ForgotPasswordController extends AbstractController
 
         return $this->render('security/reset_password.html.twig', ['token' => $token]);
     }
-
 }
