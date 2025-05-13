@@ -20,32 +20,43 @@ class UserController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->request->has('update_password')) {
-            $password = $request->request->get('new_password');
-            $confirmPassword = $request->request->get('confirm_password');
+        if ($request->isMethod('POST')) {
+            if ($request->request->has('update_username')) {
+                $username = $request->request->get('username');
+                $user->setUsername($username);
+                $em->flush();
 
-            if (
-                strlen($password) < 8 ||
-                !preg_match('/[A-Z]/', $password) ||
-                !preg_match('/[a-z]/', $password) ||
-                !preg_match('/\d/', $password)
-            ) {
-                $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
-                return $this->redirectToRoute('user_profile');
+                $this->addFlash('success', 'Nom d\'utilisateur mis à jour !');
             }
 
-            if ($password === $confirmPassword) {
+            if ($request->request->has('update_password')) {
+                $password = $request->request->get('new_password');
+                $confirmPassword = $request->request->get('confirm_password');
+
+                if ($password !== $confirmPassword) {
+                    $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
+                    return $this->redirectToRoute('user_profile');
+                }
+
+                // Vérification de la complexité du mot de passe
+                if (
+                    strlen($password) < 8 ||
+                    !preg_match('/[A-Z]/', $password) ||
+                    !preg_match('/[a-z]/', $password) ||
+                    !preg_match('/\d/', $password)
+                ) {
+                    $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
+                    return $this->redirectToRoute('user_profile');
+                }
+
                 $user->setPassword(
                     $passwordHasher->hashPassword($user, $password)
                 );
                 $em->flush();
 
                 $this->addFlash('success', 'Mot de passe modifié avec succès !');
-            } else {
-                $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
+                return $this->redirectToRoute('user_profile');
             }
-
-            return $this->redirectToRoute('user_profile');
         }
 
         return $this->render('task/profile.html.twig', [
