@@ -400,23 +400,6 @@ a.btn-secondary {
     margin-bottom: 10px;
   }
 
-  .btn-edit{
-    width: 48%!important;
-  }
-
-  .d-flex {
-    justify-content: space-between;
-  }
-
-  .bi {
-    font-size: 1.1rem;
-  }
-
-  .btn-outline-secondary, .btn-primary {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
-
   .btn-actions {
     flex-direction: column;
     align-items: flex-start;
@@ -453,6 +436,20 @@ a.btn-secondary {
       width: 100%;
       overflow-x: auto;
       display: block;
+  }
+
+  .task-form-page .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .task-form-page .d-flex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .task-form-page .bi {
+    font-size: 1.2rem;
   }
 
 }
