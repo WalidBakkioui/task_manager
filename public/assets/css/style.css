@@ -401,7 +401,7 @@ a.btn-secondary {
   }
 
   .btn-edit{
-    width: 48%;
+    width: 48%!important;
   }
 
   .d-flex {
