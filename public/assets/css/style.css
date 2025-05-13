@@ -438,11 +438,4 @@ a.btn-secondary {
       display: block;
   }
 
-  img, .form-control, .card, .btn {
-    max-width: 100%;
-  }
-
-  .container, .card, .row {
-    width: 100%;
-  }
 }
