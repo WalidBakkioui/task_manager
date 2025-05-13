@@ -21,16 +21,36 @@ class RegistrationController extends AbstractController
             $password = $request->request->get('password');
             $confirmPassword = $request->request->get('confirmPassword');
 
+            // Vérification du username
             if (empty($username) || strlen($username) > 16) {
                 $this->addFlash('error', 'Le nom d’utilisateur ne peut pas dépasser 16 caractères.');
                 return $this->redirectToRoute('app_register');
             }
 
+            // Vérification de l'adresse email
+            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->addFlash('error', 'Adresse email invalide.');
+                return $this->redirectToRoute('app_register');
+            }
+
+            // Vérification du mot de passe
             if ($password !== $confirmPassword) {
                 $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
                 return $this->redirectToRoute('app_register');
             }
 
+            // Vérification de la complexité du mot de passe
+            if (
+                strlen($password) < 8 ||
+                !preg_match('/[A-Z]/', $password) ||
+                !preg_match('/[a-z]/', $password) ||
+                !preg_match('/\d/', $password)
+            ) {
+                $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
+                return $this->redirectToRoute('app_register');
+            }
+
+            // Vérification de l'existence d'un utilisateur
             $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
             if ($existingUser) {
                 $this->addFlash('error', 'Un compte existe déjà avec cet email.');

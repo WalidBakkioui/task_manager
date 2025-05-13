@@ -14,29 +14,23 @@ class LoginController extends AbstractController
     #[Route(path: '/', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils, Security $security, AuthorizationCheckerInterface $authChecker): Response
     {
-
-        if ($security->getUser() && in_array('ROLE_BANNED', $security->getUser()->getRoles())) {
+        if ($security->getUser() && !$authChecker->isGranted('ACCESS_SITE')) {
+            $this->addFlash('error', 'Votre compte est banni.');
             $this->container->get('security.token_storage')->setToken(null);
             return $this->redirectToRoute('login');
         }
 
-        if ($security->getUser() && !$authChecker->isGranted('ACCESS_SITE')) {
-            $this->addFlash('error', 'Votre compte est banni.');
-            $this->container->get('security.token_storage')->setToken(null); // déconnexion automatique
-            return $this->redirectToRoute('login');
-        }
-
-        // Vérifie si l'utilisateur est déjà connecté
         if ($security->getUser()) {
-            if (in_array('ROLE_BANNED', $security->getUser()->getRoles())) {
-                $this->addFlash('error', 'Votre compte a été banni. Contactez l\'administrateur.');
+            if (in_array('ROLE_BANNED', $security->getUser()->getRoles()) || !$authChecker->isGranted('ACCESS_SITE')) {
+                $this->addFlash('error', 'Votre compte est banni.');
+                $this->container->get('security.token_storage')->setToken(null);
                 return $this->redirectToRoute('login');
             }
-            // Si l'utilisateur est déjà connecté, redirige vers la page protégée
-            return $this->redirectToRoute('task_index'); // rediriger vers la page des tâches
+
+            return $this->redirectToRoute('task_index');
         }
 
-        // Si l'utilisateur n'est pas connecté, afficher la page de connexion
+
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -49,7 +43,7 @@ class LoginController extends AbstractController
     #[Route(path: '/logout', name: 'logout')]
     public function logout(): void
     {
-        // Symfony s'occupe du logout automatiquement
+
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

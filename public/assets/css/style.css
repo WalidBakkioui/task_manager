@@ -333,11 +333,6 @@ a.btn-secondary {
   vertical-align: middle;
 }
 
-.task-table {
-  border-radius: 10px;
-  overflow: hidden;
-}
-
 .btn {
   border-radius: 50px !important;
   padding: 10px 20px;

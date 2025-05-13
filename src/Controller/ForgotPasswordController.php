@@ -15,11 +15,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Uid\Uuid;
 
-    /**
-     * @throws TransportExceptionInterface
-     */
-    // ... use statements inchangés
-
 class ForgotPasswordController extends AbstractController
 {
     /**
@@ -41,7 +36,7 @@ class ForgotPasswordController extends AbstractController
 
                 try {
                     $email = (new Email())
-                        ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net') // ✅ doit être vérifié sur MailerSend
+                        ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net')
                         ->to($user->getEmail())
                         ->subject('Réinitialisation du mot de passe')
                         ->html($this->renderView('emails/reset_password.html.twig', [
@@ -56,7 +51,7 @@ class ForgotPasswordController extends AbstractController
                     $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
-                $this->addFlash('error', '⚠️ Aucun compte associé à cette adresse email.');
+                $this->addFlash('info', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }
 
