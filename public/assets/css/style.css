@@ -275,7 +275,6 @@ a.btn-secondary {
   font-size: 1rem;
 }
 
-/* --- Section de recherche Admin --- */
 .search-users {
   background-color: #ffffff;
   padding: 20px;
@@ -300,7 +299,6 @@ a.btn-secondary {
   outline: none;
 }
 
-/* --- Bouton Rechercher --- */
 #searchUserButton {
   background-color: #007bff;
   border-color: #007bff;
@@ -320,7 +318,6 @@ a.btn-secondary {
   box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
 }
 
-/* --- Table --- */
 .table {
   margin-top: 20px;
   border-radius: 15px;
@@ -341,7 +338,6 @@ a.btn-secondary {
   overflow: hidden;
 }
 
-/* --- Boutons globalement --- */
 .btn {
   border-radius: 50px !important;
   padding: 10px 20px;
@@ -368,6 +364,22 @@ a.btn-secondary {
 .btn-danger:hover {
   background-color: #c82333;
   border-color: #bd2130;
+}
+
+.task-form-page .btn {
+  width: 48%;
+}
+
+.task-form-page .d-flex {
+  justify-content: space-between;
+}
+
+.task-form-page .btn-outline-secondary {
+  margin-right: 4%;
+}
+
+.task-form-page .btn-primary {
+  width: 48%;
 }
 
 /* --- Responsive --- */
