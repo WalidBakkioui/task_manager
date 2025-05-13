@@ -26,7 +26,7 @@ class UserController extends AbstractController
                 $user->setUsername($username);
                 $em->flush();
 
-                $this->addFlash('success', 'Nom d\'utilisateur mis à jour !');
+                $this->addFlash('profile_success', 'Nom d\'utilisateur mis à jour !');
             }
 
             if ($request->request->has('update_password')) {
@@ -34,7 +34,7 @@ class UserController extends AbstractController
                 $confirmPassword = $request->request->get('confirm_password');
 
                 if ($password !== $confirmPassword) {
-                    $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
+                    $this->addFlash('profile_error', 'Les mots de passe ne correspondent pas.');
                     return $this->redirectToRoute('user_profile');
                 }
 
@@ -45,7 +45,7 @@ class UserController extends AbstractController
                     !preg_match('/[a-z]/', $password) ||
                     !preg_match('/\d/', $password)
                 ) {
-                    $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
+                    $this->addFlash('profile_error', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
                     return $this->redirectToRoute('user_profile');
                 }
 
@@ -54,7 +54,7 @@ class UserController extends AbstractController
                 );
                 $em->flush();
 
-                $this->addFlash('success', 'Mot de passe modifié avec succès !');
+                $this->addFlash('profile_success', 'Mot de passe modifié avec succès !');
                 return $this->redirectToRoute('user_profile');
             }
         }
