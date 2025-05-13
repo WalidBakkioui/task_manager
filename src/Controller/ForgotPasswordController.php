@@ -58,7 +58,7 @@ class ForgotPasswordController extends AbstractController
         return $this->render('security/forgot_password.html.twig');
     }
 
-#[Route('/reset-password/{token}', name: 'reset_password')]
+    #[Route('/reset-password/{token}', name: 'reset_password')]
     public function resetPassword(string $token, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
@@ -73,6 +73,13 @@ class ForgotPasswordController extends AbstractController
 
             if ($password !== $confirmPassword) {
                 $this->addFlash('danger', 'Les mots de passe ne correspondent pas.');
+            } elseif (
+                strlen($password) < 8 ||
+                !preg_match('/[A-Z]/', $password) ||
+                !preg_match('/[a-z]/', $password) ||
+                !preg_match('/\d/', $password)
+            ) {
+                $this->addFlash('danger', 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.');
             } else {
                 $user->setPassword($passwordHasher->hashPassword($user, $password));
                 $user->setResetToken(null);
