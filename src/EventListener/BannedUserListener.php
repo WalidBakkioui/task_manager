@@ -28,10 +28,7 @@ class BannedUserListener
         $user = $this->security->getUser();
 
         if ($user instanceof UserInterface && in_array('ROLE_BANNED', $user->getRoles(), true)) {
-            // Déconnexion
             $this->tokenStorage->setToken(null);
-
-            // Redirige vers la page de login
             $event->setResponse(new RedirectResponse($this->router->generate('login')));
         }
     }

@@ -75,7 +75,7 @@ class ForgotPasswordController extends AbstractController
                 $this->addFlash('danger', 'Les mots de passe ne correspondent pas.');
             } else {
                 $user->setPassword($passwordHasher->hashPassword($user, $password));
-                $user->setResetToken(null); // enlever le token après succès
+                $user->setResetToken(null);
                 $em->flush();
 
                 $this->addFlash('success', 'Mot de passe modifié. Vous pouvez vous connecter.');

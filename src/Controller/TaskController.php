@@ -15,21 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TaskController extends AbstractController
 {
 
-//    #[Route('/', name: 'task_index')]
-//    public function index(TaskRepository $taskRepo): Response
-//    {
-//        $tasks = $taskRepo->findBy(['completed' => false]);
-//
-//        return $this->render('task/index.html.twig', [
-//            'tasks' => $tasks,
-//        ]);
-//    }
-
-
     #[Route('/user/history', name: 'task_history')]
     public function history(TaskRepository $taskRepo, Request $request): Response
     {
-        $user = $this->getUser(); // 🔥 Récupérer l'utilisateur connecté
+        $user = $this->getUser();
 
         $searchTitle = $request->query->get('searchTitle');
         $searchDate = $request->query->get('searchDate');
@@ -37,7 +26,7 @@ class TaskController extends AbstractController
 
         $queryBuilder = $taskRepo->createQueryBuilder('t')
             ->where('t.completed = :completed')
-            ->andWhere('t.user = :user') // 🔥 On ajoute un filtre sur l'utilisateur connecté
+            ->andWhere('t.user = :user')
             ->setParameter('completed', true)
             ->setParameter('user', $user);
 
@@ -130,14 +119,12 @@ class TaskController extends AbstractController
     #[Route('/admin/user/{id}/tasks', name: 'admin_user_tasks')]
     public function userTasks(int $id, EntityManagerInterface $entityManager): Response
     {
-        // Trouver l'utilisateur par ID
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé');
         }
 
-        // Récupérer toutes les tâches de cet utilisateur
         $tasks = $user->getTasks();
 
         return $this->render('task/user_tasks.html.twig', [
@@ -229,8 +216,7 @@ class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $task = new Task();
-        // Si le constructeur de Task ne définit pas createdAt, on le fait ici.
-        $task->setCreatedAt(new \DateTime());  // Assurer que createdAt est défini
+        $task->setCreatedAt(new \DateTime());
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
@@ -240,7 +226,7 @@ class TaskController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Tâche ajoutée avec succès !');
 
-            return $this->redirectToRoute('task_index'); // Redirige vers la liste des tâches
+            return $this->redirectToRoute('task_index');
         }
 
         return $this->render('task/form.html.twig', [
@@ -252,7 +238,6 @@ class TaskController extends AbstractController
     #[Route('/user/task', name: 'task_index')]
     public function index(TaskRepository $taskRepo, Request $request, EntityManagerInterface $em): Response
     {
-        // Formulaire d'ajout
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
@@ -264,37 +249,31 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_index');
         }
 
-        // Récupération des filtres de recherche
         $searchTitle = $request->query->get('searchTitle');
         $searchDate = $request->query->get('searchDate');
         $searchPriority = $request->query->get('searchPriority');
 
-        // Filtrer les tâches actives (non terminées)
         $queryBuilder = $taskRepo->createQueryBuilder('t')
             ->where('t.completed = :completed')
             ->andWhere('t.user = :user')
             ->setParameter('completed', false)
             ->setParameter('user', $this->getUser());
 
-        // Filtrer par titre si fourni
         if ($searchTitle) {
             $queryBuilder->andWhere('t.title LIKE :title')
                 ->setParameter('title', '%' . $searchTitle . '%');
         }
 
-        // Filtrer par date si fourni
         if ($searchDate) {
             $queryBuilder->andWhere('t.dueDate = :date')
                 ->setParameter('date', $searchDate);
         }
 
-        // Filtrer par priorité si fourni
         if ($searchPriority) {
             $queryBuilder->andWhere('t.priority = :priority')
                 ->setParameter('priority', $searchPriority);
         }
 
-        // Trier par priorité (élevée > moyenne > faible) puis par titre
         $queryBuilder
             ->orderBy(
                 'CASE t.priority
@@ -308,7 +287,6 @@ class TaskController extends AbstractController
             ->setParameter('mediumPriority', 'moyenne')
             ->setParameter('lowPriority', 'faible');
 
-        // Exécuter la requête pour récupérer les tâches filtrées
         $tasks = $queryBuilder->getQuery()->getResult();
 
         return $this->render('task/index.html.twig', [

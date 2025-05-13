@@ -20,12 +20,10 @@ class BannedUserVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-
-        // Si l'utilisateur est banni, refuse l'accès
         if (in_array('ROLE_BANNED', $user->getRoles(), true)) {
             return false;
         }
 
-        return true; // Sinon, autoriser
+        return true;
     }
 }

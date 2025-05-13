@@ -125,9 +125,8 @@ class Task
         return $this;
     }
 
-    // Dans le constructeur, définir `createdAt` à la date actuelle
     public function __construct()
     {
-        $this->createdAt = new \DateTime();  // Définit la date de création à la date actuelle
+        $this->createdAt = new \DateTime();
     }
 }
