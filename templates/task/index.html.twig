@@ -39,6 +39,9 @@
         {% endfor %}
 
         {{ form_start(form, { attr: { class: 'row g-3 mt-4' } }) }}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
 
         <div class="col-md-6">
             {{ form_label(form.title, 'Nom de la tâche', { label_attr: { class: 'form-label' } }) }}
