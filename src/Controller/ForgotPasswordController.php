@@ -51,7 +51,6 @@ class ForgotPasswordController extends AbstractController
                     $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
-                // Message info affiché uniquement sur la page forgot-password
                 $this->addFlash('info', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }
