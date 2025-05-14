@@ -46,12 +46,12 @@ class ForgotPasswordController extends AbstractController
 
                     $mailer->send($email);
 
-                    $this->addFlash('good', '📬 Un email de réinitialisation a été envoyé à votre adresse.');
+                    $this->addFlash('success', '📬 Un email de réinitialisation a été envoyé à votre adresse.');
                 } catch (\Exception $e) {
                     $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
-                $this->addFlash('info', '📬 Si un compte existe avec cet email, vous recevrez un message.');
+                $this->addFlash('error', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }
 
