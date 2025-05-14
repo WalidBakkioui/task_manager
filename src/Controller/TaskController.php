@@ -213,7 +213,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/user/task/new', name: 'task_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, Response $response): Response
     {
         $task = new Task();
         $task->setCreatedAt(new \DateTime());
@@ -225,11 +225,10 @@ class TaskController extends AbstractController
             $em->persist($task);
             $em->flush();
 
-            // Passer un message à Twig via une variable
-            return $this->render('task/index.html.twig', [
-                'form' => $form->createView(),
-                'message' => 'La tâche a été ajoutée avec succès !',
-            ]);
+            $response = new Response();
+            $response->headers->setCookie(new Cookie('task_success_message', 'La tâche a été ajoutée avec succès !', time() + 3600));
+
+            return $this->redirectToRoute('task_index', [], 302, $response);
         }
 
         return $this->render('task/form.html.twig', [

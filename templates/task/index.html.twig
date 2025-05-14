@@ -23,11 +23,15 @@
     </nav>
 
     <div class="container mt-4">
-        {% if message %}
+        {% if app.request.cookies.get('task_success_message') %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
+                {{ app.request.cookies.get('task_success_message') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            {# Supprimer le cookie après l'affichage #}
+            <script>
+                document.cookie = 'task_success_message=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            </script>
         {% endif %}
 
         {% if app.user %}
