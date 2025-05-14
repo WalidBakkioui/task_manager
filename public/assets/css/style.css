@@ -442,21 +442,22 @@ a.btn-secondary {
   .table {
     width: 100%;
     overflow-x: auto;
+    table-layout: fixed !important;
 /* display: block;*/
-}
+  }
 
-.task-form-page .btn {
-width: 100%;
-margin-bottom: 10px;
-}
+  .task-form-page .btn {
+  width: 100%;
+  margin-bottom: 10px;
+  }
 
-.task-form-page .d-flex {
-flex-direction: column;
-align-items: center;
-}
+  .task-form-page .d-flex {
+  flex-direction: column;
+  align-items: center;
+  }
 
-.task-form-page .bi {
-font-size: 1.2rem;
-}
+  .task-form-page .bi {
+  font-size: 1.2rem;
+  }
 
 }
