@@ -442,7 +442,7 @@ a.btn-secondary {
   .table {
       width: 100%;
       overflow-x: auto;
-
+      display: inline-table;
   }
 
   .task-form-page .btn {
