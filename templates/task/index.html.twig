@@ -23,14 +23,12 @@
     </nav>
 
     <div class="container mt-4">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endfor %}
+        {% if message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
 
         {% if app.user %}
             <h3 class="text-center text-primary mb-4">
@@ -40,7 +38,7 @@
 
         <h2 class="text-center">Mes Tâches</h2>
 
-        <p class="text-center text-muted">BAKAjoutez, recherchez et gérez vos tâches quotidiennes simplement. Cliquez sur "Ajouter la tâche" pour enregistrer une nouvelle tâche dans votre liste.</p>
+        <p class="text-center text-muted">Ajoutez, recherchez et gérez vos tâches quotidiennes simplement. Cliquez sur "Ajouter la tâche" pour enregistrer une nouvelle tâche dans votre liste.</p>
 
         {{ form_start(form, { attr: { class: 'row g-3 mt-4' } }) }}
 
