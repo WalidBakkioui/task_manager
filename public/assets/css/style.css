@@ -442,7 +442,6 @@ a.btn-secondary {
   .table {
     width: 100%;
     overflow-x: auto;
-    display: block!important;
   }
 
   .task-form-page .btn {
