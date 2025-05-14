@@ -34,7 +34,7 @@
 
         <p class="text-center text-muted">Ajoutez, recherchez et gérez vos tâches quotidiennes simplement. Cliquez sur "Ajouter la tâche" pour enregistrer une nouvelle tâche dans votre liste.</p>
 
-        {% for message in app.flashes('success-task') %}
+        {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
         {% endfor %}
 
