@@ -28,7 +28,7 @@ security:
                 enable_csrf: true
                 username_parameter: email
                 password_parameter: password
-                default_target_path: task_index  # Redirection après connexion réussie
+                default_target_path: task_index
             logout:
                 path: logout
                 target: login

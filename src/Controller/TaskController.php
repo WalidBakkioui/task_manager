@@ -179,7 +179,6 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_admin');
     }
 
-
     #[Route('/admin/user/{id}/ban', name: 'admin_user_ban', methods: ['POST'])]
     public function banUser(User $user, EntityManagerInterface $em, Request $request): Response
     {
