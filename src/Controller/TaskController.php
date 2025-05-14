@@ -224,6 +224,7 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($task);
             $em->flush();
+            $this->addFlash('success', 'La tâche a été ajoutée avec succès !');
             return $this->redirectToRoute('task_index');
         }
 
