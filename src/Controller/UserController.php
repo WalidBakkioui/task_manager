@@ -26,8 +26,14 @@ class UserController extends AbstractController
                 $user->setUsername($username);
                 $em->flush();
 
+                if (empty($username) || strlen($username) > 16) {
+                    $this->addFlash('error', 'Le nom d’utilisateur ne peut pas dépasser 16 caractères.');
+                    return $this->redirectToRoute('app_register');
+                }
+
                 $this->addFlash('profile_success', 'Nom d\'utilisateur mis à jour !');
             }
+
 
             if ($request->request->has('update_password')) {
                 $password = $request->request->get('new_password');
