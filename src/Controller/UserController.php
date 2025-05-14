@@ -23,17 +23,17 @@ class UserController extends AbstractController
         if ($request->isMethod('POST')) {
             if ($request->request->has('update_username')) {
                 $username = $request->request->get('username');
+
+                if (empty($username) || strlen($username) > 16) {
+                    $this->addFlash('profile_error', 'Le nom d’utilisateur ne peut pas dépasser 16 caractères.');
+                    return $this->redirectToRoute('user_profile');
+                }
+
                 $user->setUsername($username);
                 $em->flush();
 
-                if (empty($username) || strlen($username) > 16) {
-                    $this->addFlash('error', 'Le nom d’utilisateur ne peut pas dépasser 16 caractères.');
-                    return $this->redirectToRoute('app_register');
-                }
-
                 $this->addFlash('profile_success', 'Nom d\'utilisateur mis à jour !');
             }
-
 
             if ($request->request->has('update_password')) {
                 $password = $request->request->get('new_password');
@@ -44,7 +44,6 @@ class UserController extends AbstractController
                     return $this->redirectToRoute('user_profile');
                 }
 
-                // Vérification de la complexité du mot de passe
                 if (
                     strlen($password) < 8 ||
                     !preg_match('/[A-Z]/', $password) ||
@@ -69,4 +68,5 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
+
 }
