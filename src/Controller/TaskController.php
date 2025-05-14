@@ -225,7 +225,6 @@ class TaskController extends AbstractController
             $em->persist($task);
             $em->flush();
             $this->addFlash('success', 'Tâche ajoutée avec succès !');
-
             return $this->redirectToRoute('task_index');
         }
 

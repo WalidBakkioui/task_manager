@@ -9,27 +9,39 @@
         <h2 class="text-center">{{ editMode ? 'Modifier une tâche' : 'Ajouter une nouvelle tâche' }}</h2>
 
         {{ form_start(form) }}
+
         <div class="mb-3">
             {{ form_label(form.title) }}
             {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+            {% for error in form.title.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
         </div>
+
         <div class="mb-3">
             {{ form_label(form.description) }}
             {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {% for error in form.description.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
         </div>
+
         <div class="mb-3">
             {{ form_label(form.dueDate) }}
             {{ form_widget(form.dueDate, {'attr': {'class': 'form-control'}}) }}
         </div>
+
         <div class="mb-3">
             {{ form_label(form.priority) }}
             {{ form_widget(form.priority, {'attr': {'class': 'form-select'}}) }}
         </div>
+
         <div class="mb-3">
             {{ form_row(form.completed) }}
         </div>
 
         <button class="btn btn-primary">{{ editMode ? 'Mettre à jour' : 'Créer' }}</button>
+
         {{ form_end(form) }}
     </div>
 {% endblock %}

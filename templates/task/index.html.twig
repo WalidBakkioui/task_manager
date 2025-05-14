@@ -35,9 +35,13 @@
         <p class="text-center text-muted">Ajoutez, recherchez et gérez vos tâches quotidiennes simplement. Cliquez sur "Ajouter la tâche" pour enregistrer une nouvelle tâche dans votre liste.</p>
 
         {{ form_start(form, { attr: { class: 'row g-3 mt-4' } }) }}
+
         <div class="col-md-6">
             {{ form_label(form.title, 'Nom de la tâche', { label_attr: { class: 'form-label' } }) }}
             {{ form_widget(form.title, { attr: { class: 'form-control', placeholder: 'Ex: Finaliser le rapport' } }) }}
+            {% for error in form.title.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
         </div>
 
         <div class="col-md-3">
@@ -53,6 +57,9 @@
         <div class="col-12">
             {{ form_label(form.description, 'Description', { label_attr: { class: 'form-label' } }) }}
             {{ form_widget(form.description, { attr: { class: 'form-control', rows: 2, placeholder: 'Ajoutez des détails supplémentaires ici...' } }) }}
+            {% for error in form.description.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
         </div>
 
         <div class="col-12">
@@ -60,8 +67,6 @@
         </div>
         {{ form_end(form) }}
 
-
-        <!-- Barre de recherche -->
         <form method="get" action="{{ path('task_index') }}" class="row g-3 mt-4 search-filters">
             <div class="col-md-3">
                 <input type="text" name="searchTitle" value="{{ app.request.query.get('searchTitle') }}" class="form-control" placeholder="Rechercher par tâche">
@@ -86,7 +91,6 @@
                 </a>
             </div>
         </form>
-
 
         <ul class="list-group mt-4" id="taskList">
             {% for task in tasks %}
