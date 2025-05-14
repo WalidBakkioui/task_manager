@@ -51,6 +51,7 @@ class ForgotPasswordController extends AbstractController
                     $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
+                // Message info affiché uniquement sur la page forgot-password
                 $this->addFlash('info', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }
@@ -58,7 +59,7 @@ class ForgotPasswordController extends AbstractController
         return $this->render('security/forgot_password.html.twig');
     }
 
-#[Route('/reset-password/{token}', name: 'reset_password')]
+    #[Route('/reset-password/{token}', name: 'reset_password')]
     public function resetPassword(string $token, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
