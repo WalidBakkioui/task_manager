@@ -38,14 +38,12 @@
                     <option value="Super Admin" {% if app.request.query.get('searchRole') == 'Super Admin' %}selected{% endif %}>Super Admin</option>
                     <option value="Banni" {% if app.request.query.get('searchRole') == 'Banni' %}selected{% endif %}>Banni</option>
                 </select>
-
             </div>
             <div class="col-md-3 d-flex align-items-end justify-content-between">
                 <button type="submit" class="btn btn-primary btn-sm w-50 me-2"><i class="bi bi-search"></i></button>
                 <a href="{{ path('task_admin') }}" class="btn btn-outline-secondary btn-lg w-50"><i class="bi bi-arrow-counterclockwise"></i></a>
             </div>
         </form>
-
 
         <div class="table-responsive task-table">
             <table class="table table-bordered table-striped shadow-sm">
@@ -118,14 +116,26 @@
                                     {% endif %}
                                 {% endif %}
 
-                                {% if not is_granted('ROLE_SUPER_ADMIN') %}
-                                    <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                                <form method="post"
+                                      action="{{ path('admin_user_delete', {'id': user.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                                         <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                    </form>
-                                {% endif %}
+                                    {% elseif is_granted('ROLE_ADMIN') and 'ROLE_SUPER_ADMIN' in user.roles %}
+                                        <button type="button" class="btn btn-danger btn-sm disabled" title="Impossible de supprimer un Super Admin">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    {% elseif is_granted('ROLE_ADMIN') %}
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}
