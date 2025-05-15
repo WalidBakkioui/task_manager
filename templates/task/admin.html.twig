@@ -118,13 +118,23 @@
                                     {% endif %}
                                 {% endif %}
 
-                                {% if not is_granted('ROLE_SUPER_ADMIN') %}
-                                <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                {% if not 'ROLE_SUPER_ADMIN' in user.roles %}
+                                    <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+
+{#                                {% if not is_granted('ROLE_SUPER_ADMIN') %}#}
+{#                                <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" class="d-inline">#}
+{#                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">#}
+{#                                    <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'utilisateur">#}
+{#                                        <i class="bi bi-trash"></i>#}
+{#                                    </button>#}
+{#                                </form>#}
                             </td>
 
                         </tr>
