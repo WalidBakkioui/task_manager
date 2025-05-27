@@ -31,7 +31,7 @@ security:
                 default_target_path: task_index
             logout:
                 path: logout
-                target: login
+                target: homepage
 
 
             # activate different ways to authenticate
