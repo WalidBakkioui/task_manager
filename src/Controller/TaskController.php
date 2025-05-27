@@ -276,12 +276,13 @@ class TaskController extends AbstractController
         }
 
         $queryBuilder
-            ->orderBy(
+            ->orderBy('t.dueDate', 'ASC')
+            ->addOrderBy(
                 'CASE t.priority
-                WHEN :highPriority THEN 1
-                WHEN :mediumPriority THEN 2
-                WHEN :lowPriority THEN 3
-                ELSE 4 END', 'ASC'
+            WHEN :highPriority THEN 1
+            WHEN :mediumPriority THEN 2
+            WHEN :lowPriority THEN 3
+            ELSE 4 END', 'ASC'
             )
             ->addOrderBy('t.title', 'ASC')
             ->setParameter('highPriority', 'élevée')
