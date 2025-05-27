@@ -26,18 +26,17 @@
     </nav>
 
     <div class="container text-center mt-5">
-        <img src="{{ asset('assets/images/logo.png') }}" alt="Logo Task-Manager" class="img-fluid mb-4" style="max-width: 220px;">
-        <h1 class="display-5 fw-bold">Bienvenue sur Task-Manager</h1>
+        <img src="{{ asset('assets/images/task.png') }}" alt="Illustration tâches" class="img-fluid mb-4 rounded shadow" style="max-width: 100%; height: auto;">
+
+        <h1 class="display-5 fw-bold text-primary">Bienvenue sur Task-Manager</h1>
         <p class="lead text-muted mt-3">
-            Task-Manager est une application web simple et intuitive qui vous permet de créer, organiser et suivre vos tâches au quotidien.
-            Grâce à une interface moderne, vous pouvez gérer vos priorités, consulter l'historique de vos tâches terminées, et accéder à votre profil personnalisé.
+            Optimisez votre organisation personnelle ou professionnelle grâce à une application claire et intuitive conçue pour vous aider à gérer vos tâches de manière structurée et efficace.
         </p>
         <p class="text-muted">
-            Connectez-vous pour commencer à gérer vos tâches, ou créez un compte en quelques secondes.
+            Créez, classez, hiérarchisez et suivez l’évolution de vos tâches depuis un seul tableau de bord, que vous soyez étudiant, entrepreneur ou simple passionné d’organisation.
         </p>
-        <div class="mt-4">
-            <a href="{{ path('login') }}" class="btn btn-primary btn-lg me-2">Connexion</a>
-            <a href="{{ path('app_register') }}" class="btn btn-success btn-lg">Inscription</a>
-        </div>
+        <p class="text-muted">
+            Découvrez une interface fluide, accessible sur tous vos appareils, qui rend votre quotidien plus productif.
+        </p>
     </div>
 {% endblock %}
