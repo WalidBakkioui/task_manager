@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('homepage') }}">Tâche</a>
+                        <a class="nav-link" href="{{ path('homepage') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('login') }}">Connexion</a>
@@ -25,18 +25,23 @@
         </div>
     </nav>
 
-    <div class="container text-center mt-5">
-        <img src="{{ asset('assets/images/homepage.png') }}" alt="Illustration gestion de tâches" class="img-fluid mb-4 rounded shadow" style="max-width: 100%; height: auto;">
-
-        <h1 class="display-5 fw-bold text-primary">Bienvenue sur Task-Manager</h1>
-        <p class="lead text-muted mt-3">
-            Optimisez votre organisation personnelle ou professionnelle grâce à une application claire et intuitive conçue pour vous aider à gérer vos tâches de manière structurée et efficace.
-        </p>
-        <p class="text-muted">
-            Créez, classez, hiérarchisez et suivez l’évolution de vos tâches depuis un seul tableau de bord, que vous soyez étudiant, entrepreneur ou simple passionné d’organisation.
-        </p>
-        <p class="text-muted">
-            Découvrez une interface fluide, accessible sur tous vos appareils, qui rend votre quotidien plus productif.
-        </p>
+    <div class="container mt-5">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <h1 class="display-5 fw-bold text-primary">Bienvenue sur Task-Manager</h1>
+                <p class="lead text-muted mt-3">
+                    Optimisez votre organisation personnelle ou professionnelle grâce à une application claire et intuitive conçue pour vous aider à gérer vos tâches de manière structurée et efficace.
+                </p>
+                <p class="text-muted">
+                    Créez, classez, hiérarchisez et suivez l’évolution de vos tâches depuis un seul tableau de bord, que vous soyez étudiant, entrepreneur ou simple passionné d’organisation.
+                </p>
+                <p class="text-muted">
+                    Découvrez une interface fluide, accessible sur tous vos appareils, qui rend votre quotidien plus productif.
+                </p>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{ asset('assets/images/homepage.png') }}" alt="Illustration gestion de tâches" class="img-fluid rounded shadow">
+            </div>
+        </div>
     </div>
 {% endblock %}
