@@ -11,7 +11,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class LoginController extends AbstractController
 {
-    #[Route(path: '/', name: 'login')]
+    #[Route('/', name: 'homepage')]
+    public function homepage(): Response
+    {
+        return $this->render('task/index.html.twig');
+    }
+
+    #[Route(path: '/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils, Security $security, AuthorizationCheckerInterface $authChecker): Response
     {
         if ($security->getUser() && !$authChecker->isGranted('ACCESS_SITE')) {
@@ -29,7 +35,6 @@ class LoginController extends AbstractController
 
             return $this->redirectToRoute('task_index');
         }
-
 
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();

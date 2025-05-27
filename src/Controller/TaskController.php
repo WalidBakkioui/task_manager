@@ -290,7 +290,7 @@ class TaskController extends AbstractController
 
         $tasks = $queryBuilder->getQuery()->getResult();
 
-        return $this->render('task/index.html.twig', [
+        return $this->render('task/task.html.twig', [
             'form'  => $form->createView(),
             'tasks' => $tasks,
         ]);
