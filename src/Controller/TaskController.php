@@ -46,7 +46,8 @@ class TaskController extends AbstractController
         }
 
         $queryBuilder
-            ->orderBy(
+            ->orderBy('t.dueDate', 'ASC')
+            ->addOrderBy(
                 'CASE t.priority
              WHEN :highPriority THEN 1
              WHEN :mediumPriority THEN 2
@@ -64,6 +65,7 @@ class TaskController extends AbstractController
             'tasks' => $tasks,
         ]);
     }
+
 
 
     #[Route('/admin', name: 'task_admin')]
