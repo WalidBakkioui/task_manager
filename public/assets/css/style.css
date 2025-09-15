@@ -122,6 +122,9 @@ h2 {
   gap: 0.5rem; /* espace horizontal entre les boutons */
   flex-wrap: wrap;
 }
+.mt-2{
+  margin-bottom: 20px !important;
+}
 
 .btn-actions .btn {
   border-radius: 25px;

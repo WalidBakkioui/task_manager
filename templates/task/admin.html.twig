@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ path('homepage') }}">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Tâche</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Mes Groupes</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('task_history') }}">Historique</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
@@ -78,7 +78,7 @@
                             <td class="btn-actions d-flex gap-2">
                                 <form method="post" action="{{ path('admin_user_tasks', {'id': user.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('read-user-' ~ user.id) }}">
-                                    <button type="submit" class="btn btn-info btn-sm" title="Voir les tâches">
+                                    <button type="submit" class="btn btn-info btn-sm" title="Voir les groupes">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </form>
@@ -100,6 +100,7 @@
                                         </form>
                                     {% endif %}
 
+                                {% if is_granted('ROLE_ADMIN') and 'ROLE_SUPER_ADMIN' not in user.roles and user != app.user %}
                                     {% if 'ROLE_BANNED' in user.roles %}
                                         <form method="post" action="{{ path('admin_user_unban', {'id': user.id}) }}" class="d-inline">
                                             <input type="hidden" name="_token" value="{{ csrf_token('unban-user-' ~ user.id) }}">
@@ -115,6 +116,7 @@
                                             </button>
                                         </form>
                                     {% endif %}
+                                {% endif %}
                                 {% endif %}
 
                                 <form method="post"

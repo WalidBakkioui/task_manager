@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use App\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -19,7 +21,13 @@ class Task
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'date', nullable: true)]
+    #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date est obligatoire.")]
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThanOrEqual(
+        value: "today",
+        message: "La date limite ne peut pas être dans le passé."
+    )]
     private ?\DateTimeInterface $dueDate = null;
 
 
@@ -35,6 +43,13 @@ class Task
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: "group_id", referencedColumnName: "id", onDelete: "SET NULL", nullable: true)]
+    private ?Group $group = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'non_commence'])]
+    private ?string $status = 'non_commence';
 
     public function getId(): ?int
     {
@@ -91,13 +106,13 @@ class Task
 
     public function isCompleted(): ?bool
     {
-        return $this->completed;
+        return $this->status === 'terminee';
     }
 
     public function setCompleted(bool $completed): static
     {
         $this->completed = $completed;
-
+        $this->status = $completed ? 'terminee' : 'en_cours';
         return $this;
     }
 
@@ -128,5 +143,34 @@ class Task
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->status = 'non_commence';
+        $this->completed = false;
     }
+
+    public function getGroup(): ?Group {
+        return $this->group;
+    }
+    public function setGroup(?Group $group): self {
+        $this->group = $group; return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $allowed = ['non_commence', 'en_cours', 'terminee'];
+        if (!in_array($status, $allowed, true)) {
+            throw new \InvalidArgumentException('Statut invalide');
+        }
+
+        $this->status = $status;
+        // 🔁 garde "completed" cohérent pour le code existant
+        $this->completed = ($status === 'terminee');
+        return $this;
+    }
+
+
 }

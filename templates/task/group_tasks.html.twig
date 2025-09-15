@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tâches – {{ group.name }}{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('homepage') }}">Tâches du groupe</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('homepage') }}">Accueil</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('task_admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_history') }}">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">
+                {% if group.color %}<span class="badge me-2" style="background:{{ group.color }}">&nbsp;</span>{% endif %}
+                {{ group.name }}
+            </h3>
+            <div class="d-flex gap-2">
+                <a href="{{ path('task_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Retour aux groupes
+                </a>
+                <a href="{{ path('task_history', {'searchGroup': group.id}) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-clock-history me-1"></i> Voir terminées (Historique)
+                </a>
+            </div>
+        </div>
+
+        <form method="get" class="row g-3 search-filters">
+            <div class="col-md-3">
+                <input type="text"  name="searchTitle"    value="{{ filters.searchTitle }}"    class="form-control" placeholder="Rechercher par titre">
+            </div>
+            <div class="col-md-2">
+                <input type="date"  name="searchDate"     value="{{ filters.searchDate }}"     class="form-control">            </div>
+            <div class="col-md-2">
+                <select name="searchPriority" class="form-select">
+                    <option value="">Priorité</option>
+                    <option value="faible"  {{ filters.searchPriority == 'faible'  ? 'selected' }}>Faible</option>
+                    <option value="moyenne" {{ filters.searchPriority == 'moyenne' ? 'selected' }}>Moyenne</option>
+                    <option value="élevée"  {{ filters.searchPriority == 'élevée'  ? 'selected' }}>Élevée</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Statut</option>
+                    <option value="non_commence" {{ filters.status == 'non_commence' ? 'selected' }}>Non commencée</option>
+                    <option value="en_cours"     {{ filters.status == 'en_cours'     ? 'selected' }}>En cours</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button class="btn btn-primary w-50">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="{{ path('group_tasks', {id: group.id}) }}" class="btn btn-outline-secondary w-50">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </div>
+        </form>
+
+        <div class="row g-4 mt-2">
+            {% for t in tasks %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100 border-warning">
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <h5 class="card-title mb-1">{{ t.title }}</h5>
+                                <div class="small text-muted">
+                                    <strong>Date :</strong> {{ t.dueDate ? t.dueDate|date('d/m/Y') : '—' }}<br>
+                                    <strong>Priorité :</strong>
+                                    <span class="{% if t.priority == 'élevée' %}text-danger{% elseif t.priority == 'moyenne' %}text-warning{% else %}text-info{% endif %}">
+                  {{ t.priority|capitalize }}
+                </span><br>
+                                    <strong>Statut :</strong>
+                                    {% if t.status == 'non_commence' %}
+                                        <span class="badge bg-secondary">Non commencée</span>
+                                    {% elseif t.status == 'en_cours' %}
+                                        <span class="badge bg-warning text-dark">En cours</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Terminée</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if t.description %}
+                                <button class="btn btn-secondary btn-sm mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ t.id }}">
+                                    <i class="bi bi-card-text"></i> Description
+                                </button>
+                                <div class="collapse" id="desc-{{ t.id }}">
+                                    <div class="card card-body py-2">{{ t.description }}</div>
+                                </div>
+                            {% endif %}
+
+                            <div class="mt-auto d-flex justify-content-end gap-2">
+                                {# Bouton "Démarrer" seulement si non commencé #}
+                                {% if t.status == 'non_commence' %}
+                                    <form method="post" action="{{ path('task_start', {id: t.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('start-task-' ~ t.id) }}">
+                                        <button type="submit" class="btn btn-primary btn-sm" title="Démarrer">
+                                        <i class="bi bi-play-fill"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                {# Bouton Toggle en_cours ⇄ terminée #}
+                                {% if t.status != 'non_commence' %}
+                                    <form method="post" action="{{ path('task_toggle', {id: t.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle-task-' ~ t.id) }}">
+                                        {% if t.status == 'en_cours' %}
+                                            <button class="btn btn-success btn-sm" title="Marquer terminée">
+                                                <i class="bi bi-check2-circle"></i>
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-warning btn-sm" title="Repasser en cours">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+
+
+                                <a href="{{ path('task_edit', {id: t.id}) }}" class="btn btn-info btn-sm" title="Modifier">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form method="post" action="{{ path('task_delete', {id: t.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-task-' ~ t.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">Aucune tâche dans ce groupe.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

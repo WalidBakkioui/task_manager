@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes groupes{% endblock %}
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('homepage') }}">Gestionnaire de Tâches</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('homepage') }}">Accueil</a></li>
+                    {% if app.user %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('group_index') }}">Groupes</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('task_admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_history') }}">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_profile') }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Mes groupes</h2>
+            <a href="{{ path('group_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Nouveau groupe</a>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mt-3">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row g-3 mt-2">
+            {% for g in groups %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title mb-2">
+                                    {% if g.color %}<span class="badge" style="background:{{ g.color }}"> </span>{% endif %}
+                                    {{ g.name }}
+                                </h5>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('group_edit', {id: g.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                    <form method="post" action="{{ path('group_delete', {id: g.id}) }}" onsubmit="return confirm('Supprimer ce groupe ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('del-group-' ~ g.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="text-muted small">Créé le {{ g.createdAt|date('d/m/Y') }}</div>
+                            {% if g.description %}<p class="mt-2 mb-0">{{ g.description }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">Aucun groupe pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

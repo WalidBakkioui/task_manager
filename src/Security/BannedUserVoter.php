@@ -23,7 +23,6 @@ class BannedUserVoter extends Voter
         if (in_array('ROLE_BANNED', $user->getRoles(), true)) {
             return false;
         }
-
         return true;
     }
 }

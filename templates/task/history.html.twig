@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ path('homepage') }}">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Tâche</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('task_index') }}">Mes Groupes</a></li>
                     {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item"><a class="nav-link" href="{{ path('task_admin') }}">Admin</a></li>
                     {% endif %}
@@ -29,24 +29,34 @@
         <!-- Barre de recherche -->
         <form method="get" action="{{ path('task_history') }}" class="row g-3 mt-4 mb-4 search-filters">
             <div class="col-md-3">
-                <input type="text" name="searchTitle" value="{{ app.request.query.get('searchTitle') }}" class="form-control" placeholder="Rechercher par tâche">
+                <input type="text" name="searchTitle" value="{{ filters.searchTitle }}" class="form-control" placeholder="Rechercher par tâche">
             </div>
-            <div class="col-md-3">
-                <input type="date" name="searchDate" value="{{ app.request.query.get('searchDate') }}" class="form-control">
+            <div class="col-md-2">
+                <input type="date" name="searchDate" value="{{ filters.searchDate }}" class="form-control">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <select name="searchPriority" class="form-select">
                     <option value="">Sélectionner priorité</option>
-                    <option value="faible" {% if app.request.query.get('searchPriority') == 'faible' %}selected{% endif %}>Faible</option>
-                    <option value="moyenne" {% if app.request.query.get('searchPriority') == 'moyenne' %}selected{% endif %}>Moyenne</option>
-                    <option value="élevée" {% if app.request.query.get('searchPriority') == 'élevée' %}selected{% endif %}>Élevée</option>
+                    <option value="faible"  {{ filters.searchPriority == 'faible'  ? 'selected' }}>Faible</option>
+                    <option value="moyenne" {{ filters.searchPriority == 'moyenne' ? 'selected' }}>Moyenne</option>
+                    <option value="élevée"  {{ filters.searchPriority == 'élevée'  ? 'selected' }}>Élevée</option>
                 </select>
             </div>
-            <div class="col-md-3 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary btn-lg w-50">
+            <div class="col-md-3">
+                <select name="searchGroup" class="form-select">
+                    <option value="">Tous les groupes</option>
+                    {% for g in groups %}
+                        <option value="{{ g.id }}" {{ filters.searchGroup == g.id ? 'selected' : '' }}>
+                            {{ g.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary w-50">
                     <i class="bi bi-search"></i>
                 </button>
-                <a href="{{ path('task_history') }}" class="btn btn-outline-secondary btn-lg w-50">
+                <a href="{{ path('task_history') }}" class="btn btn-outline-secondary w-50">
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </a>
             </div>
@@ -62,11 +72,19 @@
                                 <p class="card-text mb-1">
                                     <strong>Statut :</strong> <span class="text-success">Terminée</span><br>
                                     <strong>Niveau :</strong>
-                                    <span class="{% if task.priority == 'élevée' %}text-danger{% elseif task.priority == 'moyenne' %}text-warning{% else %}text-info{% endif %}">
-                                    {{ task.priority|capitalize }}
-                                </span><br>
-                                    <small class="text-muted">Date : {{ task.dueDate ? task.dueDate|date('d/m/Y') : '—' }}</small>
+                                    <span class="{% if task.priority == 'élevée' %}text-danger{% elseif task.priority == 'moyenne' %}text-warning{% else %}text-info{% endif %}">{{ task.priority|capitalize }}</span><br>
+                                    <strong>Groupe :</strong>
+                                    {% if task.group %}
+                                    {% if task.group.color %}
+                                        <span class="badge rounded-pill" style="background: {{ task.group.color }}; color: #fff;">{{ task.group.name }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ task.group.name }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">Sans groupe</span>
+                                    {% endif %}<br>
                                 </p>
+
                             </div>
                             <div class="mt-auto d-flex justify-content-between align-items-center">
                                 <span class="btn-actions">

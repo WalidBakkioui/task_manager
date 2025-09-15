@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ edit ? 'Modifier un groupe' : 'Nouveau groupe' }}{% endblock %}
+{% block body %}
+    <div class="container mt-4">
+        <h2 class="mb-3">{{ edit ? 'Modifier un groupe' : 'Nouveau groupe' }}</h2>
+        {% form_theme form 'bootstrap_5_layout.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.color) }}
+        {{ form_row(form.description) }}
+
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{{ path('group_index') }}" class="btn btn-outline-secondary">Annuler</a>
+            <button class="btn btn-primary">{{ edit ? 'Enregistrer' : 'Créer' }}</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

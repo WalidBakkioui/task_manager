@@ -32,7 +32,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 16)]
     private $username;
 
-
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Group::class, orphanRemoval: true)]
+    private Collection $groups;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $resetToken = null;
@@ -52,6 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,4 +152,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /** @return Collection<int, Group> */
+    public function getGroups(): Collection { return $this->groups; }
 }

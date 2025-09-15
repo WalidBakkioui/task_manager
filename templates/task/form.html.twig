@@ -35,13 +35,19 @@
             {{ form_label(form.priority) }}
             {{ form_widget(form.priority, {'attr': {'class': 'form-select'}}) }}
         </div>
-
-        <div class="mb-3">
-            {{ form_row(form.completed) }}
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.group, 'Groupe', { label_attr: { class: 'form-label fw-semibold' } }) }}
+            {{ form_widget(form.group, { attr: { class: 'form-select' } }) }}
+            {{ form_errors(form.group) }}
         </div>
 
+        <a href="{{ path('task_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Annuler
+        </a>
         <button class="btn btn-primary">{{ editMode ? 'Mettre à jour' : 'Créer' }}</button>
+
 
         {{ form_end(form) }}
     </div>
+
 {% endblock %}

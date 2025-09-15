@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Group;
+use Doctrine\ORM\EntityRepository;
 
 class TaskType extends AbstractType
 {
@@ -39,7 +42,10 @@ class TaskType extends AbstractType
             ->add('dueDate', DateType::class, [
                 'label' => 'Date limite',
                 'widget' => 'single_text',
-                'required' => false,
+                'required' => true, //
+                'attr' => [
+                    'min' => (new \DateTime('today'))->format('Y-m-d'), // empêche dates passées côté navigateur
+                ],
             ])
             ->add('priority', ChoiceType::class, [
                 'label' => 'Priorité',
@@ -49,13 +55,32 @@ class TaskType extends AbstractType
                     'Élevée' => 'élevée',
                 ],
             ])
-        ;
+            ->add('group', EntityType::class, [
+                'class' => Group::class,
+                'choice_label' => 'name',
+                'placeholder' => '— Sélectionner un groupe —',
+                'required' => false,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    $qb = $er->createQueryBuilder('g')
+                        ->where('g.user = :u')
+                        ->setParameter('u', $options['user'])
+                        ->orderBy('g.name', 'ASC');
+
+                    // 👇 masque "Sans groupe" si demandé
+                    if ($options['hide_default_group'] === true) {
+                        $qb->andWhere('g.name <> :def')->setParameter('def', 'Sans groupe');
+                    }
+                    return $qb;
+                },
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Task::class,
+            'user' => null,
+            'hide_default_group' => false,
         ]);
     }
 }
