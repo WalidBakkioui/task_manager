@@ -36,7 +36,7 @@ class ForgotPasswordController extends AbstractController
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
-                $to = $user->getEmail(); // <-- l’email saisi
+                $to = $_ENV['APP_ADMIN_EMAIL'] ?? $user->getEmail();
 
                 $email = (new Email())
                     ->from(new Address('no-reply@send.task-manager.be', 'Task Manager'))
