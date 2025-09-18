@@ -36,17 +36,14 @@ class ForgotPasswordController extends AbstractController
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
-                $to = $_ENV['APP_ADMIN_EMAIL'] ?? $user->getEmail();
-
                 $email = (new Email())
-                    ->from(new Address('no-reply@send.task-manager.be', 'Task Manager'))
-                    ->to($to)
+                    ->from(new Address('no-reply@send.task-manager.be', 'Task Manager')) // sender validé MailerSend
+                    ->to($user->getEmail())
                     ->subject('Réinitialisation du mot de passe')
                     ->html($this->renderView('emails/reset_password.html.twig', [
                         'resetToken' => $token,
                         'resetUrl'   => $resetUrl,
                     ]));
-                $mailer->send($email);
 
                 try {
                     $mailer->send($email);
