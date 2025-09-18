@@ -37,8 +37,8 @@ class ForgotPasswordController extends AbstractController
                 );
 
                 $email = (new Email())
-                    ->from(new Address('no-reply@send.task-manager.be', 'Task Manager')) // sender validé MailerSend
-                    ->to($user->getEmail())
+                    ->from(new Address('no-reply@send.task-manager.be', 'Task Manager'))
+                    ->to($user->getEmail())   // <- reste comme ça
                     ->subject('Réinitialisation du mot de passe')
                     ->html($this->renderView('emails/reset_password.html.twig', [
                         'resetToken' => $token,
