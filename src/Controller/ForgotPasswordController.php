@@ -36,21 +36,22 @@ class ForgotPasswordController extends AbstractController
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
+                $to = $user->getEmail(); // <-- l’email saisi
+
                 $email = (new Email())
                     ->from(new Address('no-reply@send.task-manager.be', 'Task Manager'))
-                    ->to($user->getEmail())   // <- reste comme ça
+                    ->to($to)
                     ->subject('Réinitialisation du mot de passe')
                     ->html($this->renderView('emails/reset_password.html.twig', [
                         'resetToken' => $token,
-                        'resetUrl'   => $resetUrl,
+                        'resetUrl'   => $this->generateUrl('reset_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL),
                     ]));
 
                 try {
                     $mailer->send($email);
                     $this->addFlash('success', '📬 Un email de réinitialisation a été envoyé.');
-                } catch (TransportExceptionInterface $e) {
-                    // $this->container->get('logger')->error($e->getMessage());
-                    $this->addFlash('danger', '❌ Erreur lors de l’envoi de l’e-mail, réessayez plus tard.');
+                } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
+                    $this->addFlash('danger', "❌ Erreur d’envoi : ".$e->getMessage());
                 }
             } else {
                 // On ne révèle pas si l’email existe réellement (bonne pratique)
