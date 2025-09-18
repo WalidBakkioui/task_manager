@@ -3,23 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Uid\Uuid;
 
 class ForgotPasswordController extends AbstractController
 {
-    /**
-     * @throws TransportExceptionInterface
-     */
     #[Route('/forgot-password', name: 'forgot_password')]
     public function forgotPassword(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
@@ -32,25 +30,33 @@ class ForgotPasswordController extends AbstractController
                 $user->setResetToken($token);
                 $em->flush();
 
-                $resetUrl = $this->generateUrl('reset_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+                $resetUrl = $this->generateUrl(
+                    'reset_password',
+                    ['token' => $token],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+
+                $to = $_ENV['APP_ADMIN_EMAIL'] ?? $user->getEmail();
+
+                $email = (new Email())
+                    ->from(new Address('no-reply@send.task-manager.be', 'Task Manager'))
+                    ->to($to)
+                    ->subject('Réinitialisation du mot de passe')
+                    ->html($this->renderView('emails/reset_password.html.twig', [
+                        'resetToken' => $token,
+                        'resetUrl'   => $resetUrl,
+                    ]));
+                $mailer->send($email);
 
                 try {
-                    $email = (new Email())
-                        ->from('MS_hku5iX@test-86org8eeq80gew13.mlsender.net')
-                        ->to($user->getEmail())
-                        ->subject('Réinitialisation du mot de passe')
-                        ->html($this->renderView('emails/reset_password.html.twig', [
-                            'resetToken' => $token,
-                            'resetUrl' => $resetUrl
-                        ]));
-
                     $mailer->send($email);
-
-                    $this->addFlash('success', '📬 Un email de réinitialisation a été envoyé à votre adresse.');
-                } catch (\Exception $e) {
-                    $this->addFlash('danger', '❌ Une erreur est survenue lors de l’envoi de l’e-mail. Veuillez réessayer plus tard.');
+                    $this->addFlash('success', '📬 Un email de réinitialisation a été envoyé.');
+                } catch (TransportExceptionInterface $e) {
+                    // $this->container->get('logger')->error($e->getMessage());
+                    $this->addFlash('danger', '❌ Erreur lors de l’envoi de l’e-mail, réessayez plus tard.');
                 }
             } else {
+                // On ne révèle pas si l’email existe réellement (bonne pratique)
                 $this->addFlash('error', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }
