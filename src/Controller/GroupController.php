@@ -62,8 +62,6 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('task_index');
         }
 
-
-
         return $this->render('group/form_group.html.twig', [
             'form' => $form->createView(),
             'edit' => true,
