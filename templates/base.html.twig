@@ -14,6 +14,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+    {% block body %}{% endblock %}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="container mt-3">
@@ -24,8 +25,6 @@
             </div>
         {% endfor %}
     {% endfor %}
-
-    {% block body %}{% endblock %}
 
     {% block footer %}
         <footer class="bg-dark text-white text-center py-3 mt-auto">
