@@ -25,10 +25,8 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('ACCESS_SITE');
         $user = $this->getUser();
 
-        // 🔐 helper consent
         $consent = $request->cookies->get('cookie_consent') === '1';
 
-        // 🔎 lire paramètres + fallback cookie
         $searchTitle    = $request->query->get('searchTitle', $request->cookies->get('h_title', ''));
         $searchDate     = $request->query->get('searchDate', $request->cookies->get('h_date', ''));
         $searchPriority = $request->query->get('searchPriority', $request->cookies->get('h_prio', ''));
@@ -64,10 +62,8 @@ class TaskController extends AbstractController
 
         $tasks = $qb->getQuery()->getResult();
 
-        // Pour le select "Groupe"
         $groups = $em->getRepository(\App\Entity\Group::class)->findBy(['user' => $user], ['name' => 'ASC']);
 
-        // 🎯 on renvoie les valeurs résolues au template
         $response = $this->render('task/history.html.twig', [
             'tasks'   => $tasks,
             'groups'  => $groups,
@@ -79,7 +75,6 @@ class TaskController extends AbstractController
             ],
         ]);
 
-        // 🍪 écrire cookies (30 jours) si consentement
         if ($consent) {
             $in30d = time() + 60*60*24*30;
             $response->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie('h_title', $searchTitle, $in30d, '/', null, $request->isSecure(), false, false, 'lax'));
@@ -150,7 +145,6 @@ class TaskController extends AbstractController
             throw $this->createNotFoundException('Utilisateur non trouvé');
         }
 
-        // 🔁 On affiche les groupes de cet utilisateur (triés par nom)
         $groups = $em->getRepository(Group::class)->findBy(
             ['user' => $user],
             ['name' => 'ASC']
@@ -158,7 +152,7 @@ class TaskController extends AbstractController
 
         return $this->render('task/user_tasks.html.twig', [
             'user'   => $user,
-            'groups' => $groups, // ⬅️ on envoie les groupes au template
+            'groups' => $groups,
         ]);
     }
 
@@ -241,30 +235,6 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_admin');
     }
 
-//    #[Route('/user/task/new', name: 'task_new')]
-//    public function new(Request $request, EntityManagerInterface $em, Response $response): Response
-//    {
-//        $task = new Task();
-//        $task->setCreatedAt(new \DateTime());
-//
-//        $form = $this->createForm(TaskType::class, $task);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $em->persist($task);
-//            $em->flush();
-//
-//            $response = new Response();
-//            $response->headers->setCookie(new Cookie('task_success_message', 'La tâche a été ajoutée avec succès !', time() + 3600));
-//
-//            return $this->redirectToRoute('task_index', [], 302, $response);
-//        }
-//
-//        return $this->render('task/form.html.twig', [
-//            'form' => $form->createView(),
-//            'editMode' => false,
-//        ]);
-//    }
     #[Route('/user/task/new', name: 'task_new')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -272,7 +242,6 @@ class TaskController extends AbstractController
 
         $task = new Task();
 
-        // Pré-sélection via query ?group=ID
         if ($gid = $request->query->get('group')) {
             $g = $em->getRepository(Group::class)->find($gid);
             if ($g && $g->getUser() === $this->getUser()) {
@@ -289,7 +258,6 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($this->getUser());
 
-            // ranger dans "Sans groupe" si vide
             if (!$task->getGroup()) {
                 $default = $em->getRepository(Group::class)->findOneBy([
                     'user' => $this->getUser(),
@@ -318,98 +286,6 @@ class TaskController extends AbstractController
         ]);
     }
 
-// changer 09/09
-//    #[Route('/user/task/new', name: 'task_new')]
-//    public function new(Request $request, EntityManagerInterface $em): Response
-//    {
-//        $this->denyAccessUnlessGranted('ACCESS_SITE');
-//
-//        $task = new Task();
-//        // $task->setCreatedAt(new \DateTime()); // déjà fait dans le __construct()
-//
-//        $form = $this->createForm(TaskType::class, $task, ['user' => $this->getUser()]);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $task->setUser($this->getUser()); // 🔐 associer au user connecté
-//            $em->persist($task);
-//            $em->flush();
-//
-//            // ✅ Remplace le cookie par un flash
-//            $this->addFlash('success', 'La tâche a été ajoutée avec succès !');
-//
-//            return $this->redirectToRoute('task_index');
-//        }
-//
-//        return $this->render('task/form.html.twig', [
-//            'form' => $form->createView(),
-//            'editMode' => false,
-//        ]);
-//    }
-
-//    #[Route('/user/task', name: 'task_index')]
-//    public function index(TaskRepository $taskRepo, Request $request, EntityManagerInterface $em): Response
-//    {
-//        $task = new Task();
-//        $form = $this->createForm(TaskType::class, $task);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $task->setUser($this->getUser());
-//            $em->persist($task);
-//            $em->flush();
-//            return $this->redirectToRoute('task_index');
-//        }
-//
-//        $searchTitle = $request->query->get('searchTitle');
-//        $searchDate = $request->query->get('searchDate');
-//        $searchPriority = $request->query->get('searchPriority');
-//
-//        $queryBuilder = $taskRepo->createQueryBuilder('t')
-//            ->where('t.completed = :completed')
-//            ->andWhere('t.user = :user')
-//            ->setParameter('completed', false)
-//            ->setParameter('user', $this->getUser());
-//
-//        if ($searchTitle) {
-//            $queryBuilder->andWhere('t.title LIKE :title')
-//                ->setParameter('title', '%' . $searchTitle . '%');
-//        }
-//
-//        if ($searchDate) {
-//            $queryBuilder->andWhere('t.dueDate = :date')
-//                ->setParameter('date', $searchDate);
-//        }
-//
-//        if ($searchPriority) {
-//            $queryBuilder->andWhere('t.priority = :priority')
-//                ->setParameter('priority', $searchPriority);
-//        }
-//
-//        $queryBuilder
-//            ->orderBy('t.dueDate', 'ASC')
-//            ->addOrderBy(
-//                'CASE t.priority
-//            WHEN :highPriority THEN 1
-//            WHEN :mediumPriority THEN 2
-//            WHEN :lowPriority THEN 3
-//            ELSE 4 END', 'ASC'
-//            )
-//            ->addOrderBy('t.title', 'ASC')
-//            ->setParameter('highPriority', 'élevée')
-//            ->setParameter('mediumPriority', 'moyenne')
-//            ->setParameter('lowPriority', 'faible');
-//
-//        $tasks = $queryBuilder->getQuery()->getResult();
-//
-//        return $this->render('task/task.html.twig', [
-//            'form'  => $form->createView(),
-//            'tasks' => $tasks,
-//        ]);
-//    }
-
-// src/Controller/TaskController.php
-
     #[Route('/user/task', name: 'task_index')]
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
@@ -417,7 +293,6 @@ class TaskController extends AbstractController
         $em = $doctrine->getManager();
         $user = $this->getUser();
 
-        // ✅ garantir l’existence du groupe « Sans groupe » pour l’utilisateur
         $default = $em->getRepository(Group::class)->findOneBy([
             'user' => $user,
             'name' => 'Sans groupe',
@@ -431,7 +306,6 @@ class TaskController extends AbstractController
             $em->flush();
         }
 
-        // 🔎 filtres simples (par nom)
         $searchName = trim((string) $request->query->get('searchGroup', ''));
 
         $qb = $em->getRepository(Group::class)->createQueryBuilder('g')
@@ -450,57 +324,6 @@ class TaskController extends AbstractController
             'searchName' => $searchName,
         ]);
     }
-// changer le 09/09
-//    #[Route('/user/task', name: 'task_index')]
-//    public function index(TaskRepository $taskRepo, Request $request, EntityManagerInterface $em): Response
-//    {
-//        $this->denyAccessUnlessGranted('ACCESS_SITE');
-//
-//        $searchTitle = $request->query->get('searchTitle');
-//        $searchDate = $request->query->get('searchDate');
-//        $searchPriority = $request->query->get('searchPriority');
-//        $searchGroup = $request->query->get('searchGroup'); // ✅
-//
-//        $qb = $taskRepo->createQueryBuilder('t')
-//            ->where('t.completed = :completed')
-//            ->andWhere('t.user = :user')
-//            ->setParameter('completed', false)
-//            ->setParameter('user', $this->getUser());
-//
-//        if ($searchTitle) {
-//            $qb->andWhere('t.title LIKE :title')->setParameter('title', '%'.$searchTitle.'%');
-//        }
-//        if ($searchDate) {
-//            $qb->andWhere('t.dueDate = :date')->setParameter('date', $searchDate);
-//        }
-//        if ($searchPriority) {
-//            $qb->andWhere('t.priority = :priority')->setParameter('priority', $searchPriority);
-//        }
-//        if ($searchGroup) { // ✅ filtre par groupe
-//            $qb->andWhere('t.group = :gid')->setParameter('gid', $searchGroup);
-//        }
-//
-//        $qb->orderBy('t.dueDate', 'ASC')
-//            ->addOrderBy("CASE WHEN t.priority = :high THEN 1 WHEN t.priority = :medium THEN 2 WHEN t.priority = :low THEN 3 ELSE 4 END", 'ASC')
-//            ->addOrderBy('t.title', 'ASC')
-//            ->setParameter('high', 'élevée')
-//            ->setParameter('medium', 'moyenne')
-//            ->setParameter('low', 'faible');
-//
-//        $tasks = $qb->getQuery()->getResult();
-//
-//        // Pour alimenter le select dans le template
-//        $groups = $em->getRepository(Group::class)->findBy(
-//            ['user' => $this->getUser()],
-//            ['name' => 'ASC']
-//        );
-//
-//        return $this->render('task/list.html.twig', [
-//            'tasks'  => $tasks,
-//            'groups' => $groups,
-//        ]);
-//    }
-
 
     #[Route('/user/tasks/{id}/complete', name: 'task_complete', methods: ['POST'])]
     public function complete(Task $task, Request $request, EntityManagerInterface $em): Response
@@ -513,7 +336,7 @@ class TaskController extends AbstractController
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
-        $task->setCompleted(true); // sync -> status = 'terminee'
+        $task->setCompleted(true);
         $em->flush();
 
         return $request->headers->get('referer')
@@ -617,12 +440,12 @@ class TaskController extends AbstractController
         $searchTitle    = $request->query->get('searchTitle');
         $searchDate     = $request->query->get('searchDate');
         $searchPriority = $request->query->get('searchPriority');
-        $filterStatus   = $request->query->get('status'); // 'en_cours' | 'non_commence' (optionnel)
+        $filterStatus   = $request->query->get('status');
 
         $qb = $taskRepo->createQueryBuilder('t')
             ->andWhere('t.user = :user')
             ->andWhere('t.group = :grp')
-            ->andWhere('t.completed = :c') // ici on n’affiche que les non-terminées
+            ->andWhere('t.completed = :c')
             ->setParameter('user', $user)
             ->setParameter('grp', $group)
             ->setParameter('c', false);
@@ -705,7 +528,7 @@ class TaskController extends AbstractController
         }
 
         if ($task->getStatus() === 'non_commence' || !$task->getStatus()) {
-            $task->setStatus('en_cours'); // completed = false
+            $task->setStatus('en_cours');
             $em->flush();
         }
 

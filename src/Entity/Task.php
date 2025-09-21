@@ -167,10 +167,7 @@ class Task
         }
 
         $this->status = $status;
-        // 🔁 garde "completed" cohérent pour le code existant
         $this->completed = ($status === 'terminee');
         return $this;
     }
-
-
 }

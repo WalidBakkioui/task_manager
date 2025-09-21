@@ -54,7 +54,6 @@ class ForgotPasswordController extends AbstractController
                     $this->addFlash('danger', "❌ Erreur d’envoi : ".$e->getMessage());
                 }
             } else {
-                // On ne révèle pas si l’email existe réellement (bonne pratique)
                 $this->addFlash('error', '📬 Si un compte existe avec cet email, vous recevrez un message.');
             }
         }

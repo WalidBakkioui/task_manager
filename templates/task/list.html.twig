@@ -1,4 +1,3 @@
-{# templates/task/list.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes groupes{% endblock %}
@@ -25,7 +24,6 @@
     </nav>
 
     <div class="container mt-4 mb-5">
-        {# flashes (succès, erreurs, etc.) #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
@@ -51,7 +49,6 @@
             </div>
         </div>
 
-        {# barre de recherche #}
         <form method="get" action="{{ path('task_index') }}" class="row g-3 mt-3 search-filters">
             <div class="col-md-9">
                 <input type="text" name="searchGroup" value="{{ searchName }}" class="form-control" placeholder="Rechercher un groupe par nom">
@@ -96,7 +93,6 @@
                                 </div>
                             </div>
 
-                            {# petits compteurs #}
                             <div class="text-muted small">
                                 {% set total = g.tasks|length %}
                                 {% set done  = g.tasks|filter(t => t.status == 'terminee')|length %}
@@ -113,7 +109,6 @@
                                     <i class="bi bi-list-task me-1"></i> Voir les tâches
                                 </a>
 
-                                {# raccourci pour ajouter une tâche directement dans ce groupe #}
                                 <a href="{{ path('task_new', {'group': g.id}) }}" class="btn btn-sm btn-success">
                                     <i class="bi bi-plus-circle me-1"></i> Ajouter une tâche
                                 </a>

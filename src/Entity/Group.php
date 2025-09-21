@@ -20,7 +20,7 @@ class Group
     private ?string $name = null;
 
     #[ORM\Column(length: 7, nullable: true)]
-    private ?string $color = null; // ex: "#0d6efd"
+    private ?string $color = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -41,7 +41,6 @@ class Group
         $this->createdAt = new \DateTime();
     }
 
-    // getters/setters …
     public function getId(): ?int { return $this->id; }
     public function getName(): ?string { return $this->name; }
     public function setName(string $name): self { $this->name = $name; return $this; }

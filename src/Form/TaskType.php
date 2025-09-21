@@ -42,9 +42,9 @@ class TaskType extends AbstractType
             ->add('dueDate', DateType::class, [
                 'label' => 'Date limite',
                 'widget' => 'single_text',
-                'required' => true, //
+                'required' => true,
                 'attr' => [
-                    'min' => (new \DateTime('today'))->format('Y-m-d'), // empêche dates passées côté navigateur
+                    'min' => (new \DateTime('today'))->format('Y-m-d'),
                 ],
             ])
             ->add('priority', ChoiceType::class, [
@@ -66,7 +66,6 @@ class TaskType extends AbstractType
                         ->setParameter('u', $options['user'])
                         ->orderBy('g.name', 'ASC');
 
-                    // 👇 masque "Sans groupe" si demandé
                     if ($options['hide_default_group'] === true) {
                         $qb->andWhere('g.name <> :def')->setParameter('def', 'Sans groupe');
                     }

@@ -106,7 +106,6 @@
                             {% endif %}
 
                             <div class="mt-auto d-flex justify-content-end gap-2">
-                                {# Bouton "Démarrer" seulement si non commencé #}
                                 {% if t.status == 'non_commence' %}
                                     <form method="post" action="{{ path('task_start', {id: t.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('start-task-' ~ t.id) }}">
@@ -116,7 +115,6 @@
                                     </form>
                                 {% endif %}
 
-                                {# Bouton Toggle en_cours ⇄ terminée #}
                                 {% if t.status != 'non_commence' %}
                                     <form method="post" action="{{ path('task_toggle', {id: t.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('toggle-task-' ~ t.id) }}">

@@ -93,13 +93,11 @@
             const key = 'admin_open_groups_user_{{ user.id }}';
             const opened = new Set((document.cookie.match(new RegExp('(?:^|; )'+key+'=([^;]*)'))?.[1] || '').split(',').filter(Boolean));
 
-            // restaurer l'état
             opened.forEach(id => {
                 const el = document.getElementById('grp-'+id);
                 if (el) new bootstrap.Collapse(el, { toggle: true });
             });
 
-            // écouter open/close
             document.querySelectorAll('[id^="grp-"]').forEach(el => {
                 el.addEventListener('shown.bs.collapse', e => {
                     opened.add(el.id.replace('grp-',''));
