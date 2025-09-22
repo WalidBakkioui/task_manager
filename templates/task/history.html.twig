@@ -75,7 +75,7 @@
                                     <span class="{% if task.priority == 'élevée' %}text-danger{% elseif task.priority == 'moyenne' %}text-warning{% else %}text-info{% endif %}">{{ task.priority|capitalize }}</span><br>
                                     <strong>Groupe :</strong>
                                     <strong>Créée le :</strong> {{ task.createdAt ? task.createdAt|date('d/m/Y') : '—' }}<br>
-                                    <strong>Date limite :</strong> {{ task.dueDate ? task.dueDate|date('d/m/Y') : '—' }}
+                                    <strong>Date limite :</strong> {{ task.dueDate ? task.dueDate|date('d/m/Y') : '—' }}<br>
                                     {% if task.group %}
                                     {% if task.group.color %}
                                         <span class="badge rounded-pill" style="background: {{ task.group.color }}; color: #fff;">{{ task.group.name }}</span>
